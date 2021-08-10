@@ -1,0 +1,100 @@
+vi notifier-celery-workers-stderr.log
+............................................................................................................................................
+    return self.cursor.execute(sql, params)
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/django/db/backends/sqlite3/base.py", line 318, in execute
+    return Database.Cursor.execute(self, query, params)
+OperationalError: database is locked
+2020-08-18 10:37:34,252 [INFO] [service_name=notifier] [tasks] Forums digest task already scheduled by 'edx'; skipping: from_dt=2020-08-18 10:30:00 to_dt=2020-08-18 10:35:00
+2020-08-18 10:37:34,367 [INFO] [service_name=notifier] [job] Task notifier.tasks.do_forums_digests[05b30335-7332-490a-8fcc-b419c80566a6] succeeded in 0.489200884942s: None
+=============================================================================================================================================
+2020-08-18 10:37:39,073 [WARNING] [service_name=notifier] [base] /edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/django/core/management/base.py:260: RemovedInDjango19Warning: "requires_model_validation" is deprecated in favor of "requires_system_checks".
+  RemovedInDjango19Warning)
+
+2020-08-18 10:37:39,248 [WARNING] [service_name=notifier] [worker] /edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/celery/apps/worker.py:161: CDeprecationWarning:
+Starting from version 3.2 Celery will refuse to accept pickle by default.
+
+The pickle serializer is a security concern as it may give attackers
+the ability to execute any command.  It's important to secure
+your broker from unauthorized access when using pickle, so we think
+that enabling pickle should require a deliberate action and not be
+the default choice.
+
+If you depend on pickle then you should set a setting to disable this
+warning and to be sure that everything will continue working
+when you upgrade to Celery 3.2::
+
+    CELERY_ACCEPT_CONTENT = ['pickle', 'json', 'msgpack', 'yaml']
+
+You must only enable the serializers that you will actually use.
+
+
+  warnings.warn(CDeprecationWarning(W_PICKLE_DEPRECATED))
+
+2020-08-18 10:37:39,279 [INFO] [service_name=notifier] [consumer] Connected to django://localhost//
+2020-08-18 10:37:39,305 [WARNING] [service_name=notifier] [log] celery@edx ready.
+2020-08-18 10:37:39,478 [INFO] [service_name=notifier] [strategy] Received task: notifier.tasks.do_forums_digests[3cf91273-dae8-4409-8c3b-da1eb1730b9c]
+2020-08-18 10:37:39,650 [ERROR] [service_name=notifier] [__init__] Unrecoverable error: OperationalError('database is locked',)
+Traceback (most recent call last):
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/celery/worker/__init__.py", line 206, in start
+    self.blueprint.start(self)
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/celery/bootsteps.py", line 123, in start
+    step.start(parent)
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/celery/bootsteps.py", line 374, in start
+    return self.obj.start()
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/celery/worker/consumer.py", line 278, in start
+    blueprint.start(self)
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/celery/bootsteps.py", line 123, in start
+    step.start(parent)
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/celery/worker/consumer.py", line 821, in start
+    c.loop(*c.loop_args())
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/celery/worker/loops.py", line 103, in synloop
+    connection.drain_events(timeout=2.0)
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/kombu/connection.py", line 288, in drain_events
+    return self.transport.drain_events(self.connection, **kwargs)
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/kombu/transport/virtual/__init__.py", line 830, in drain_events
+    item, channel = get(timeout=timeout)
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/kombu/transport/virtual/scheduling.py", line 39, in get
+    return self.fun(resource, **kwargs), resource
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/kombu/transport/virtual/__init__.py", line 850, in _drain_channel
+    return channel.drain_events(timeout=timeout)
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/kombu/transport/virtual/__init__.py", line 642, in drain_events
+    return self._poll(self.cycle, timeout=timeout)
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/kombu/transport/virtual/__init__.py", line 328, in _poll
+    return cycle.get()
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/kombu/transport/virtual/scheduling.py", line 39, in get
+    return self.fun(resource, **kwargs), resource
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/kombu/transport/django/__init__.py", line 49, in _get
+    m = self.Queue.objects.fetch(queue)
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/kombu/transport/django/managers.py", line 37, in fetch
+    return queue.messages.pop()
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/kombu/transport/django/managers.py", line 21, in _commit
+    return fun(*args, **kwargs)
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/kombu/transport/django/managers.py", line 75, in pop
+    result.save()
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/django/db/models/base.py", line 734, in save
+    force_update=force_update, update_fields=update_fields)
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/django/db/models/base.py", line 762, in save_base
+    updated = self._save_table(raw, cls, force_insert, force_update, using, update_fields)
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/django/db/models/base.py", line 827, in _save_table
+    forced_update)
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/django/db/models/base.py", line 877, in _do_update
+    return filtered._update(values) > 0
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/django/db/models/query.py", line 580, in _update
+    return query.get_compiler(self.db).execute_sql(CURSOR)
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 1062, in execute_sql
+    cursor = super(SQLUpdateCompiler, self).execute_sql(result_type)
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 840, in execute_sql
+    cursor.execute(sql, params)
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/django/db/backends/utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/django/db/utils.py", line 98, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/django/db/backends/utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "/edx/app/notifier/virtualenvs/notifier/local/lib/python2.7/site-packages/django/db/backends/sqlite3/base.py", line 318, in execute
+    return Database.Cursor.execute(self, query, params)
+OperationalError: database is locked
+2020-08-18 10:37:39,678 [INFO] [service_name=notifier] [tasks] Forums digest task already scheduled by 'edx'; skipping: from_dt=2020-08-18 10:30:00 to_dt=2020-08-18 10:35:00
+2020-08-18 10:37:39,711 [INFO] [service_name=notifier] [job] Task notifier.tasks.do_forums_digests[3cf91273-dae8-4409-8c3b-da1eb1730b9c] succeeded in 0.23049023794s: None
+============================================================================================================================================
+

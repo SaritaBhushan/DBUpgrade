@@ -1,0 +1,443 @@
+Fresh Hawthorn machine:
+DumpScript  FH26  G82_R2  restoreMongo.sh  restoreMySQL.sh
+edx@edx:/Database/mig$ mysql -uroot -p < FH26/mysql-structure-data-20200702T181904.sql 
+Enter password: 
+.............................................................
+edx@edx:/Database/mig$ mongorestore -u admin -p -h localhost --authenticationDatabase admin --drop -d edxapp FH26/mongo-dump-20200702T181904/edxapp
+
+.............................................................
+edx@edx:/Database/mig$ mongorestore -u admin -p password -h localhost --authenticationDatabase admin --drop -d edxapp  FH26/mongo-dump-20200702T181904/edxapp
+
+==============================================================================================================================================
+edx@edx:/Database/mig/G82_R2$ mysql -uroot -p < mysql-structure-data-20200811T171058.sql 
+Enter password: 
+
+.............................................................
+edx@edx:/Database/mig/G82_R2$ mongorestore -u admin -p password -h localhost --authenticationDatabase admin --drop -d cs_comments_service mongo-dump-20200811T171058/cs_comments_service
+
+.............................................................
+
+edx@edx:/Database/mig/G82_R2$ mongorestore -u admin -p password -h localhost --authenticationDatabase admin --drop -d edxapp  mongo-dump-20200811T171058/edxapp
+==============================================================================================================================================
+edx@edx:/Database/mig/G82_R2$ cd /var/tmp/configuration/
+edx@edx:/var/tmp/configuration$ git branch
+* (HEAD detached at open-release/hawthorn.2)
+  master
+edx@edx:/var/tmp/configuration$ git diff
+edx@edx:/var/tmp/configuration$ git status
+HEAD detached at open-release/hawthorn.2
+nothing to commit, working directory clean
+edx@edx:/var/tmp/configuration$ cd 
+edx@edx:~$ cd /Database/
+.............................................................
+
+edx@edx:/Database$ cd
+edx@edx:~$ sudo su - -s /bin/bash edxapp
+[sudo] password for edx: 
+edxapp@edx:~$ . edxapp_env
+edxapp@edx:~$ cd edx-platform/
+edxapp@edx:~/edx-platform$ python manage.py lms drop_djcelery_tables --settings=aws
+2021-06-02 01:42:03,359 INFO 16272 [dd.dogapi] dog_stats_api.py:66 - Initializing dog api to use statsd: localhost, 8125
+2021-06-02 01:42:09,300 INFO 16272 [celery_utils.management.commands.drop_djcelery_tables] drop_djcelery_tables.py:51 - Acquiring tables locks on `djcelery_periodictask`, `djcelery_taskstate`, `djcelery_periodictasks`, `djcelery_workerstate`, `djcelery_intervalschedule`, `djcelery_crontabschedule`, `celery_taskmeta`, `celery_tasksetmeta`
+2021-06-02 01:42:09,302 INFO 16272 [celery_utils.management.commands.drop_djcelery_tables] drop_djcelery_tables.py:45 - table lock raw SQL:
+LOCK TABLES `djcelery_periodictask` WRITE, `djcelery_taskstate` WRITE, `djcelery_periodictasks` WRITE, `djcelery_workerstate` WRITE, `djcelery_intervalschedule` WRITE, `djcelery_crontabschedule` WRITE, `celery_taskmeta` WRITE, `celery_tasksetmeta` WRITE
+2021-06-02 01:42:10,480 INFO 16272 [celery_utils.management.commands.drop_djcelery_tables] drop_djcelery_tables.py:62 - Tables are confirmed empty and I hold a lock on all of them, proceeding to DROP TABLE
+2021-06-02 01:42:10,481 INFO 16272 [celery_utils.management.commands.drop_djcelery_tables] drop_djcelery_tables.py:45 - drop `djcelery_periodictask` raw SQL:
+DROP TABLE IF EXISTS `djcelery_periodictask` CASCADE
+2021-06-02 01:42:11,110 INFO 16272 [celery_utils.management.commands.drop_djcelery_tables] drop_djcelery_tables.py:45 - drop `djcelery_taskstate` raw SQL:
+DROP TABLE IF EXISTS `djcelery_taskstate` CASCADE
+2021-06-02 01:42:11,199 INFO 16272 [celery_utils.management.commands.drop_djcelery_tables] drop_djcelery_tables.py:45 - drop `djcelery_periodictasks` raw SQL:
+DROP TABLE IF EXISTS `djcelery_periodictasks` CASCADE
+2021-06-02 01:42:11,267 INFO 16272 [celery_utils.management.commands.drop_djcelery_tables] drop_djcelery_tables.py:45 - drop `djcelery_workerstate` raw SQL:
+DROP TABLE IF EXISTS `djcelery_workerstate` CASCADE
+2021-06-02 01:42:11,311 INFO 16272 [celery_utils.management.commands.drop_djcelery_tables] drop_djcelery_tables.py:45 - drop `djcelery_intervalschedule` raw SQL:
+DROP TABLE IF EXISTS `djcelery_intervalschedule` CASCADE
+2021-06-02 01:42:11,380 INFO 16272 [celery_utils.management.commands.drop_djcelery_tables] drop_djcelery_tables.py:45 - drop `djcelery_crontabschedule` raw SQL:
+DROP TABLE IF EXISTS `djcelery_crontabschedule` CASCADE
+2021-06-02 01:42:11,563 INFO 16272 [celery_utils.management.commands.drop_djcelery_tables] drop_djcelery_tables.py:45 - drop `celery_taskmeta` raw SQL:
+DROP TABLE IF EXISTS `celery_taskmeta` CASCADE
+Traceback (most recent call last):
+  File "manage.py", line 121, in <module>
+    execute_from_command_line([sys.argv[0]] + django_args)
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/core/management/__init__.py", line 364, in execute_from_command_line
+    utility.execute()
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/core/management/__init__.py", line 356, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/core/management/base.py", line 283, in run_from_argv
+    self.execute(*args, **cmd_options)
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/core/management/base.py", line 330, in execute
+    output = self.handle(*args, **options)
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/celery_utils/management/commands/drop_djcelery_tables.py", line 66, in handle
+    self._log_execute(cursor, drop_sql, "drop {}".format(table_name))
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/celery_utils/management/commands/drop_djcelery_tables.py", line 46, in _log_execute
+    cursor.execute(sql)
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/backends/utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/utils.py", line 94, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/backends/utils.py", line 62, in execute
+    return self.cursor.execute(sql)
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/backends/mysql/base.py", line 101, in execute
+    return self.cursor.execute(query, args)
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/MySQLdb/cursors.py", line 205, in execute
+    self.errorhandler(self, exc, value)
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/MySQLdb/connections.py", line 36, in defaulterrorhandler
+    raise errorclass, errorvalue
+django.db.utils.IntegrityError: (1217, 'Cannot delete or update a parent row: a foreign key constraint fails')
+edxapp@edx:~/edx-platform$ exit
+logout
+.............................................................
+edx@edx:~$ cd /var/tmp/configuration/
+edx@edx:/var/tmp/configuration$ git branch
+* (HEAD detached at open-release/hawthorn.2)
+  master
+edx@edx:/var/tmp/configuration$ export OPENEDX_RELEASE=open-release/hawthorn.2
+edx@edx:/var/tmp/configuration$ cd
+edx@edx:~$ sudo vi /edx/app/edx_ansible/edx_ansible/util/install/native.sh
+[sudo] password for edx: 
+edx@edx:~$ /edx/app/edx_ansible/edx_ansible/util/install/native.sh --tags migrate
+Capturing output to logs/install-20210602-114042.log
+Installation started at 2021-06-02 11:40:42
+Installing release 'open-release/hawthorn.2'
+Reading package lists...
+Building dependency tree...
+Reading state information...
+python-software-properties is already the newest version (0.96.20.10).
+0 upgraded, 0 newly installed, 0 to remove and 25 not upgraded.
+gpg: keyring `/tmp/tmpfzh_aknh/secring.gpg' created
+gpg: keyring `/tmp/tmpfzh_aknh/pubring.gpg' created
+gpg: requesting key BA9EF27F from hkp server keyserver.ubuntu.com
+gpg: /tmp/tmpfzh_aknh/trustdb.gpg: trustdb created
+gpg: key BA9EF27F: public key "Launchpad Toolchain builds" imported
+gpg: Total number processed: 1
+gpg:               imported: 1  (RSA: 1)
+OK
+Hit:1 http://in.archive.ubuntu.com/ubuntu xenial InRelease
+Get:2 http://in.archive.ubuntu.com/ubuntu xenial-updates InRelease [109 kB]
+Hit:3 http://ppa.launchpad.net/git-core/ppa/ubuntu xenial InRelease
+Get:4 http://in.archive.ubuntu.com/ubuntu xenial-backports InRelease [107 kB]
+Hit:5 http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu xenial InRelease
+Get:6 http://security.ubuntu.com/ubuntu xenial-security InRelease [109 kB]
+Get:7 http://in.archive.ubuntu.com/ubuntu xenial-updates/main amd64 Packages [2,049 kB]
+Hit:9 http://ppa.edx.org xenial InRelease
+Err:9 http://ppa.edx.org xenial InRelease
+  The following signatures were invalid: KEYEXPIRED 1544547750  KEYEXPIRED 1544547750  KEYEXPIRED 1544547750
+Hit:10 http://nginx.org/packages/ubuntu xenial InRelease
+Ign:8 https://packages.elastic.co/elasticsearch/1.5/debian stable InRelease
+Hit:11 https://packages.elastic.co/elasticsearch/1.5/debian stable Release
+Get:13 http://in.archive.ubuntu.com/ubuntu xenial-updates/main i386 Packages [1,525 kB]
+Get:14 http://in.archive.ubuntu.com/ubuntu xenial-updates/universe amd64 Packages [1,219 kB]
+Get:15 http://in.archive.ubuntu.com/ubuntu xenial-updates/universe i386 Packages [1,086 kB]
+Get:16 https://packagecloud.io/rabbitmq/rabbitmq-server/ubuntu xenial InRelease [23.8 kB]
+Err:16 https://packagecloud.io/rabbitmq/rabbitmq-server/ubuntu xenial InRelease
+  The following signatures couldn't be verified because the public key is not available: NO_PUBKEY F6609E60DC62814E
+Ign:17 http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 InRelease
+Get:18 http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 Release [3,462 B]
+Get:19 http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 Release.gpg [801 B]
+Err:19 http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 Release.gpg
+  The following signatures were invalid: KEYEXPIRED 1570654450
+Fetched 6,232 kB in 5s (1,061 kB/s)
+Reading package lists...
+W: An error occurred during the signature verification. The repository is not updated and the previous index files will be used. GPG error: http://ppa.edx.org xenial InRelease: The following signatures were invalid: KEYEXPIRED 1544547750  KEYEXPIRED 1544547750  KEYEXPIRED 1544547750
+W: http://packages.elastic.co/elasticsearch/1.5/debian/dists/stable/Release.gpg: Signature by key 46095ACC8548582C1A2699A9D27D666CD88E42B4 uses weak digest algorithm (SHA1)
+W: An error occurred during the signature verification. The repository is not updated and the previous index files will be used. GPG error: https://packagecloud.io/rabbitmq/rabbitmq-server/ubuntu xenial InRelease: The following signatures couldn't be verified because the public key is not available: NO_PUBKEY F6609E60DC62814E
+W: An error occurred during the signature verification. The repository is not updated and the previous index files will be used. GPG error: http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 Release: The following signatures were invalid: KEYEXPIRED 1570654450
+W: Failed to fetch http://ppa.edx.org/dists/xenial/InRelease  The following signatures were invalid: KEYEXPIRED 1544547750  KEYEXPIRED 1544547750  KEYEXPIRED 1544547750
+W: Failed to fetch https://packagecloud.io/rabbitmq/rabbitmq-server/ubuntu/dists/xenial/InRelease  The following signatures couldn't be verified because the public key is not available: NO_PUBKEY F6609E60DC62814E
+W: Failed to fetch http://repo.mongodb.org/apt/ubuntu/dists/xenial/mongodb-org/3.2/Release.gpg  The following signatures were invalid: KEYEXPIRED 1570654450
+W: Some index files failed to download. They have been ignored, or old ones used instead.
+Reading package lists...
+Building dependency tree...
+Reading state information...
+Calculating upgrade...
+The following packages have been kept back:
+  apt apt-utils base-files dpkg elasticsearch gcc-8-base git git-man
+  libapt-pkg5.0 libatomic1 libcc1-0 libgcc1 libgomp1 libitm1 liblsan0
+  libquadmath0 libstdc++6 libtsan0 linux-generic linux-headers-generic
+  linux-image-generic rabbitmq-server ubuntu-minimal ubuntu-server
+  update-notifier-common
+The following packages will be upgraded:
+  python-apt python-apt-common python3-apt
+3 upgraded, 0 newly installed, 0 to remove and 25 not upgraded.
+Need to get 308 kB of archives.
+After this operation, 0 B of additional disk space will be used.
+Get:1 http://in.archive.ubuntu.com/ubuntu xenial-updates/main amd64 python-apt-common all 1.1.0~beta1ubuntu0.16.04.12 [16.7 kB]
+Get:2 http://in.archive.ubuntu.com/ubuntu xenial-updates/main amd64 python3-apt amd64 1.1.0~beta1ubuntu0.16.04.12 [145 kB]
+Get:3 http://in.archive.ubuntu.com/ubuntu xenial-updates/main amd64 python-apt amd64 1.1.0~beta1ubuntu0.16.04.12 [147 kB]
+Fetched 308 kB in 0s (611 kB/s)
+(Reading database ... 80192 files and directories currently installed.)
+Preparing to unpack .../python-apt-common_1.1.0~beta1ubuntu0.16.04.12_all.deb ...
+Unpacking python-apt-common (1.1.0~beta1ubuntu0.16.04.12) over (1.1.0~beta1ubuntu0.16.04.11) ...
+Preparing to unpack .../python3-apt_1.1.0~beta1ubuntu0.16.04.12_amd64.deb ...
+Unpacking python3-apt (1.1.0~beta1ubuntu0.16.04.12) over (1.1.0~beta1ubuntu0.16.04.11) ...
+Preparing to unpack .../python-apt_1.1.0~beta1ubuntu0.16.04.12_amd64.deb ...
+Unpacking python-apt (1.1.0~beta1ubuntu0.16.04.12) over (1.1.0~beta1ubuntu0.16.04.11) ...
+Setting up python-apt-common (1.1.0~beta1ubuntu0.16.04.12) ...
+Setting up python3-apt (1.1.0~beta1ubuntu0.16.04.12) ...
+Setting up python-apt (1.1.0~beta1ubuntu0.16.04.12) ...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+build-essential is already the newest version (12.1ubuntu2).
+g++ is already the newest version (4:5.3.1-1ubuntu1).
+gcc is already the newest version (4:5.3.1-1ubuntu1).
+libxmlsec1-dev is already the newest version (1.2.20-2ubuntu4).
+swig is already the newest version (3.0.8-0ubuntu3).
+curl is already the newest version (7.47.0-1ubuntu2.19).
+libfreetype6-dev is already the newest version (2.6.1-0.1ubuntu2.5).
+libmysqlclient-dev is already the newest version (5.7.33-0ubuntu0.16.04.1).
+libxml2-dev is already the newest version (2.9.3+dfsg1-1ubuntu0.7).
+libxslt1-dev is already the newest version (1.1.28-2.1ubuntu0.3).
+python-apt is already the newest version (1.1.0~beta1ubuntu0.16.04.12).
+python-dev is already the newest version (2.7.12-1~16.04).
+software-properties-common is already the newest version (0.96.20.10).
+python-pip is already the newest version (8.1.1-2ubuntu0.6).
+git-core is already the newest version (1:2.14.2-1~ppa0~ubuntu16.04.1).
+0 upgraded, 0 newly installed, 0 to remove and 25 not upgraded.
+The directory '/home/edx/.cache/pip/http' or its parent directory is not owned by the current user and the cache has been disabled. Please check the permissions and owner of that directory. If executing pip with sudo, you may want sudo's -H flag.
+The directory '/home/edx/.cache/pip' or its parent directory is not owned by the current user and caching wheels has been disabled. check the permissions and owner of that directory. If executing pip with sudo, you may want sudo's -H flag.
+Requirement already up-to-date: pip==9.0.3 in /usr/local/lib/python2.7/dist-packages
+You are using pip version 9.0.3, however version 21.1.2 is available.
+You should consider upgrading via the 'pip install --upgrade pip' command.
+The directory '/home/edx/.cache/pip/http' or its parent directory is not owned by the current user and the cache has been disabled. Please check the permissions and owner of that directory. If executing pip with sudo, you may want sudo's -H flag.
+The directory '/home/edx/.cache/pip' or its parent directory is not owned by the current user and caching wheels has been disabled. check the permissions and owner of that directory. If executing pip with sudo, you may want sudo's -H flag.
+Requirement already up-to-date: setuptools==39.0.1 in /usr/local/lib/python2.7/dist-packages
+You are using pip version 9.0.3, however version 21.1.2 is available.
+You should consider upgrading via the 'pip install --upgrade pip' command.
+Requirement already up-to-date: virtualenv==15.2.0 in /usr/local/lib/python2.7/dist-packages
+You are using pip version 9.0.3, however version 21.1.2 is available.
+You should consider upgrading via the 'pip install --upgrade pip' command.
+open-release/hawthorn.2
+fatal: destination path 'configuration' already exists and is not an empty directory.
+HEAD is now at 3a8161a... Merge pull request #4722 from edx/mulby/hawthorn/fix-ace-defaults
+From https://github.com/edx/configuration
+ * [new branch]      BOM-2083   -> origin/BOM-2083
+ * [new branch]      aakbar/PROD-472 -> origin/aakbar/PROD-472
+ * [new branch]      add-accounts-mfe-conf -> origin/add-accounts-mfe-conf
+ * [new branch]      andytr1/change-name-to-program-console -> origin/andytr1/change-name-to-program-console
+ * [new branch]      branding/aj/docker-unset-footer_organization_image -> origin/branding/aj/docker-unset-footer_organization_image
+ + 5af2ca7...cb28216 coryleeio/debug -> origin/coryleeio/debug  (forced update)
+ * [new branch]      cpappas/ISRE-639 -> origin/cpappas/ISRE-639
+ * [new branch]      dependabot/pip/ansible-2.9.20 -> origin/dependabot/pip/ansible-2.9.20
+ * [new branch]      dependabot/pip/cryptography-3.3.2 -> origin/dependabot/pip/cryptography-3.3.2
+ * [new branch]      dependabot/pip/jinja2-2.11.3 -> origin/dependabot/pip/jinja2-2.11.3
+ * [new branch]      dependabot/pip/rsa-4.7 -> origin/dependabot/pip/rsa-4.7
+ * [new branch]      dependabot/pip/urllib3-1.26.5 -> origin/dependabot/pip/urllib3-1.26.5
+ * [new branch]      dependabot/pip/util/aws_ip_locator/urllib3-1.26.5 -> origin/dependabot/pip/util/aws_ip_locator/urllib3-1.26.5
+ * [new branch]      dependabot/pip/util/check_for_key_collisions/pyyaml-5.4 -> origin/dependabot/pip/util/check_for_key_collisions/pyyaml-5.4
+ * [new branch]      dependabot/pip/util/check_rds_configs/urllib3-1.26.5 -> origin/dependabot/pip/util/check_rds_configs/urllib3-1.26.5
+ * [new branch]      dependabot/pip/util/cloudflare/by_origin_purger/urllib3-1.26.5 -> origin/dependabot/pip/util/cloudflare/by_origin_purger/urllib3-1.26.5
+ * [new branch]      dependabot/pip/util/elasticsearch/urllib3-1.26.5 -> origin/dependabot/pip/util/elasticsearch/urllib3-1.26.5
+ * [new branch]      dependabot/pip/util/helm_values_to_rst_table_util/pyyaml-5.4 -> origin/dependabot/pip/util/helm_values_to_rst_table_util/pyyaml-5.4
+ * [new branch]      dependabot/pip/util/jenkins/check_celery_progress/pyyaml-5.4 -> origin/dependabot/pip/util/jenkins/check_celery_progress/pyyaml-5.4
+ * [new branch]      dependabot/pip/util/jenkins/check_celery_progress/rsa-4.1 -> origin/dependabot/pip/util/jenkins/check_celery_progress/rsa-4.1
+ * [new branch]      dependabot/pip/util/jenkins/export_dead_locks/urllib3-1.26.5 -> origin/dependabot/pip/util/jenkins/export_dead_locks/urllib3-1.26.5
+ * [new branch]      dependabot/pip/util/jenkins/list_mysql_process/urllib3-1.26.5 -> origin/dependabot/pip/util/jenkins/list_mysql_process/urllib3-1.26.5
+ * [new branch]      dependabot/pip/util/jenkins/primary_keys/urllib3-1.26.5 -> origin/dependabot/pip/util/jenkins/primary_keys/urllib3-1.26.5
+ * [new branch]      dependabot/pip/util/jenkins/rds_alarms_checker/urllib3-1.26.5 -> origin/dependabot/pip/util/jenkins/rds_alarms_checker/urllib3-1.26.5
+ * [new branch]      dependabot/pip/util/jenkins/rsa-4.7 -> origin/dependabot/pip/util/jenkins/rsa-4.7
+ * [new branch]      dependabot/pip/util/jenkins/update_celery_monitoring/pyyaml-5.4 -> origin/dependabot/pip/util/jenkins/update_celery_monitoring/pyyaml-5.4
+ * [new branch]      dependabot/pip/util/jenkins/update_celery_monitoring/rsa-4.1 -> origin/dependabot/pip/util/jenkins/update_celery_monitoring/rsa-4.1
+ * [new branch]      dependabot/pip/util/jenkins/urllib3-1.26.5 -> origin/dependabot/pip/util/jenkins/urllib3-1.26.5
+ * [new branch]      dependabot/pip/util/pingdom/pyyaml-5.4 -> origin/dependabot/pip/util/pingdom/pyyaml-5.4
+ * [new branch]      dependabot/pip/util/pingdom/urllib3-1.26.5 -> origin/dependabot/pip/util/pingdom/urllib3-1.26.5
+ * [new branch]      dependabot/pip/util/vpc-tools/urllib3-1.26.5 -> origin/dependabot/pip/util/vpc-tools/urllib3-1.26.5
+ * [new branch]      derf/add-proxied-hostname-for-prospectus-proxy -> origin/derf/add-proxied-hostname-for-prospectus-proxy
+ * [new branch]      diana/pin-forums-earlier -> origin/diana/pin-forums-earlier
+ * [new branch]      edx-abolger-add-admin-portal-to-mfe -> origin/edx-abolger-add-admin-portal-to-mfe
+ * [new branch]      edx-as-a-library -> origin/edx-as-a-library
+ * [new branch]      estute/dummy-plugin-installation -> origin/estute/dummy-plugin-installation
+ * [new branch]      estute/insights-sandbox -> origin/estute/insights-sandbox
+ * [new branch]      estute/package-needed-for-pipelines -> origin/estute/package-needed-for-pipelines
+ * [new branch]      estute/remove-jenkins-it -> origin/estute/remove-jenkins-it
+ * [new branch]      fix-playbook -> origin/fix-playbook
+ * [new branch]      iamsobanjaved/celery-debug -> origin/iamsobanjaved/celery-debug
+ * [new branch]      iamsobanjaved/celery-logs -> origin/iamsobanjaved/celery-logs
+ * [new branch]      ihassan/ISRE-581_plugins_updates -> origin/ihassan/ISRE-581_plugins_updates
+ * [new branch]      ihassan/ISRE-827_update_tools_jenkins_docker -> origin/ihassan/ISRE-827_update_tools_jenkins_docker
+ * [new branch]      ihassan/ISRE_710_fix_pkgs -> origin/ihassan/ISRE_710_fix_pkgs
+ * [new branch]      jazibhumayun/deng-887-install-prefect -> origin/jazibhumayun/deng-887-install-prefect
+ * [new branch]      jazibhumayun/fix-python-dict-errors -> origin/jazibhumayun/fix-python-dict-errors
+ * [new branch]      jazibhumayun/install-python3.8-new-de-jenkins -> origin/jazibhumayun/install-python3.8-new-de-jenkins
+ * [new branch]      jdmulloy/enhance_maint -> origin/jdmulloy/enhance_maint
+ * [new branch]      jdmulloy/parallel_static -> origin/jdmulloy/parallel_static
+ * [new branch]      jdmulloy/py35_eol -> origin/jdmulloy/py35_eol
+ * [new branch]      jdmulloy/tools_jenkins_py38 -> origin/jdmulloy/tools_jenkins_py38
+ * [new branch]      jdmulloy/travis_docker_build -> origin/jdmulloy/travis_docker_build
+ * [new branch]      jenkins/cleanup-python-code-a489bfc -> origin/jenkins/cleanup-python-code-a489bfc
+ * [new branch]      jenkins/upgrade-python-requirements-cccea4e -> origin/jenkins/upgrade-python-requirements-cccea4e
+ * [new branch]      jlajoie/ENT-3546 -> origin/jlajoie/ENT-3546
+ * [new branch]      kdmccormick/delete-authors -> origin/kdmccormick/delete-authors
+   3fb6077..ad7c796  master     -> origin/master
+ * [new branch]      matthugs/add-nginx-tls-redirect-to-learner-portals -> origin/matthugs/add-nginx-tls-redirect-to-learner-portals
+ * [new branch]      mikix/bionic -> origin/mikix/bionic
+ * [new branch]      nadeem/test_lm_config -> origin/nadeem/test_lm_config
+ * [new branch]      nedbat/lilac-tubular -> origin/nedbat/lilac-tubular
+   1ee0480..f0c5539  open-release/juniper.master -> origin/open-release/juniper.master
+ * [new branch]      open-release/koa.master -> origin/open-release/koa.master
+ * [new branch]      open-release/lilac.master -> origin/open-release/lilac.master
+ * [new branch]      open-release/lilac.rc1 -> origin/open-release/lilac.rc1
+ * [new branch]      revert-6270-derf/add-prospectus-env-file-for-shell-users -> origin/revert-6270-derf/add-prospectus-env-file-for-shell-users
+ * [new branch]      rir/ws-1232 -> origin/rir/ws-1232
+ * [new branch]      rsgraber/WS-1627-update-config-to-copy -> origin/rsgraber/WS-1627-update-config-to-copy
+ * [new branch]      shafqat-test-int-2 -> origin/shafqat-test-int-2
+ * [new branch]      shafqat/test-int -> origin/shafqat/test-int
+ * [new branch]      shafqat/test-int-2 -> origin/shafqat/test-int-2
+ * [new branch]      tuchfarber/add_build_result_analytics_jenkins -> origin/tuchfarber/add_build_result_analytics_jenkins
+ * [new branch]      tuchfarber/add_jenkins_build_result -> origin/tuchfarber/add_jenkins_build_result
+ * [new branch]      tuchfarber/fix_common_image_builders -> origin/tuchfarber/fix_common_image_builders
+ * [new branch]      upgrade-codejail-python -> origin/upgrade-codejail-python
+ * [new branch]      upgrade-pip-203 -> origin/upgrade-pip-203
+ * [new branch]      usamasadiq/remove-py35-codejail-environment -> origin/usamasadiq/remove-py35-codejail-environment
+ * [new branch]      watcher-bom-2452 -> origin/watcher-bom-2452
+   83eb90c..4022d95  yonkers-ironwood -> origin/yonkers-ironwood
+ * [new branch]      yonkers-juniper -> origin/yonkers-juniper
+ * [new tag]         open-release/juniper.3 -> open-release/juniper.3
+ * [new tag]         open-release/koa.1 -> open-release/koa.1
+ * [new tag]         open-release/koa.2 -> open-release/koa.2
+ * [new tag]         open-release/koa.2a -> open-release/koa.2a
+ * [new tag]         open-release/koa.3 -> open-release/koa.3
+You are not currently on a branch.
+Please specify which branch you want to merge with.
+See git-pull(1) for details.
+
+    git pull <remote> <branch>
+
+Requirement already satisfied: ansible==2.3.1.0 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 7))
+Requirement already satisfied: asn1crypto==0.24.0 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 8))
+Requirement already satisfied: awscli==1.15.19 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 9))
+Requirement already satisfied: bcrypt==3.1.4 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 10))
+Requirement already satisfied: boto3==1.7.14 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 11))
+Requirement already satisfied: boto==2.48.0 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 12))
+Requirement already satisfied: botocore==1.10.19 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 13))
+Requirement already satisfied: certifi==2018.4.16 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 14))
+Requirement already satisfied: cffi==1.11.5 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 15))
+Requirement already satisfied: chardet==3.0.4 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 16))
+Requirement already satisfied: colorama==0.3.7 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 17))
+Requirement already satisfied: cryptography==2.2.2 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 18))
+Requirement already satisfied: datadog==0.8.0 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 19))
+Requirement already satisfied: decorator==4.3.0 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 20))
+Requirement already satisfied: docopt==0.6.2 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 21))
+Requirement already satisfied: docutils==0.14 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 22))
+Requirement already satisfied: ecdsa==0.13 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 23))
+Requirement already satisfied: enum34==1.1.6 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 24))
+Requirement already satisfied: futures==3.2.0 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 25))
+Requirement already satisfied: idna==2.6 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 26))
+Requirement already satisfied: ipaddress==1.0.22 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 27))
+Requirement already satisfied: jinja2==2.8 in /usr/lib/python2.7/dist-packages (from -r requirements.txt (line 28))
+Requirement already satisfied: jmespath==0.9.3 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 29))
+Requirement already satisfied: markupsafe==1.0 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 30))
+Requirement already satisfied: mysql-python==1.2.5 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 31))
+Requirement already satisfied: networkx==1.11 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 32))
+Requirement already satisfied: paramiko==2.4.1 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 33))
+Requirement already satisfied: pathlib2==2.3.0 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 34))
+Requirement already satisfied: prettytable==0.7.2 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 35))
+Requirement already satisfied: pyasn1==0.4.2 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 36))
+Requirement already satisfied: pycparser==2.18 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 37))
+Requirement already satisfied: pycrypto==2.6.1 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 38))
+Requirement already satisfied: pymongo==3.2.2 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 39))
+Requirement already satisfied: pynacl==1.2.1 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 40))
+Requirement already satisfied: python-dateutil==2.7.3 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 41))
+Requirement already satisfied: python-simple-hipchat==0.2 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 42))
+Requirement already satisfied: pyyaml==3.12 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 43))
+Requirement already satisfied: requests==2.18.4 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 44))
+Requirement already satisfied: rsa==3.4.2 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 45))
+Requirement already satisfied: s3transfer==0.1.13 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 46))
+Requirement already satisfied: scandir==1.7 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 47))
+Requirement already satisfied: simplejson==3.15.0 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 48))
+Requirement already satisfied: six==1.11.0 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 49))
+Requirement already satisfied: urllib3==1.22 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 50))
+Requirement already satisfied: wsgiref==0.1.2 in /usr/lib/python2.7 (from -r requirements.txt (line 51))
+Requirement already satisfied: docker-compose==1.9.0 in /usr/local/lib/python2.7/dist-packages (from -r requirements.txt (line 53))
+Requirement already satisfied: setuptools in /usr/local/lib/python2.7/dist-packages (from ansible==2.3.1.0->-r requirements.txt (line 7))
+Requirement already satisfied: websocket-client<1.0,>=0.32.0 in /usr/local/lib/python2.7/dist-packages (from docker-compose==1.9.0->-r requirements.txt (line 53))
+Requirement already satisfied: dockerpty<0.5,>=0.4.1 in /usr/local/lib/python2.7/dist-packages (from docker-compose==1.9.0->-r requirements.txt (line 53))
+Requirement already satisfied: docker-py<2.0,>=1.10.6 in /usr/local/lib/python2.7/dist-packages (from docker-compose==1.9.0->-r requirements.txt (line 53))
+Requirement already satisfied: texttable<0.9,>=0.8.1 in /usr/local/lib/python2.7/dist-packages (from docker-compose==1.9.0->-r requirements.txt (line 53))
+Requirement already satisfied: cached-property<2,>=1.2.0 in /usr/local/lib/python2.7/dist-packages (from docker-compose==1.9.0->-r requirements.txt (line 53))
+Requirement already satisfied: jsonschema<3,>=2.5.1 in /usr/local/lib/python2.7/dist-packages (from docker-compose==1.9.0->-r requirements.txt (line 53))
+Requirement already satisfied: backports.ssl-match-hostname>=3.5; python_version < "3.5" in /usr/local/lib/python2.7/dist-packages (from docker-py<2.0,>=1.10.6->docker-compose==1.9.0->-r requirements.txt (line 53))
+Requirement already satisfied: docker-pycreds>=0.2.1 in /usr/local/lib/python2.7/dist-packages (from docker-py<2.0,>=1.10.6->docker-compose==1.9.0->-r requirements.txt (line 53))
+Requirement already satisfied: functools32; python_version == "2.7" in /usr/local/lib/python2.7/dist-packages (from jsonschema<3,>=2.5.1->docker-compose==1.9.0->-r requirements.txt (line 53))
+You are using pip version 9.0.3, however version 21.1.2 is available.
+You should consider upgrading via the 'pip install --upgrade pip' command.
+ [WARNING]: While constructing a mapping from /var/tmp/configuration/playbooks/roles/forum/defaults/main.yml, line 75, column 3, found a
+duplicate dict key (RACK_ENV). Using last defined value only.
+ [WARNING]: While constructing a mapping from /var/tmp/configuration/playbooks/roles/forum/defaults/main.yml, line 75, column 3, found a
+duplicate dict key (SINATRA_ENV). Using last defined value only.
+ [WARNING]: While constructing a mapping from /var/tmp/configuration/playbooks/roles/forum/defaults/main.yml, line 75, column 3, found a
+duplicate dict key (SEARCH_SERVER). Using last defined value only.
+ [WARNING]: While constructing a mapping from /var/tmp/configuration/playbooks/roles/forum/defaults/main.yml, line 75, column 3, found a
+duplicate dict key (MONGOHQ_URL). Using last defined value only.
+
+PLAY [Bootstrap instance(s)] *******************************************************************************************************************
+
+PLAY [Configure instance(s)] *******************************************************************************************************************
+
+TASK [Gathering Facts] *************************************************************************************************************************
+ok: [localhost]
+
+TASK [edxapp : migrate] ************************************************************************************************************************
+changed: [localhost] => (item=lms)
+changed: [localhost] => (item=cms)
+
+TASK [edxapp : migrate] ************************************************************************************************************************
+changed: [localhost] => (item=lms)
+changed: [localhost] => (item=cms)
+
+TASK [edx_django_service : migrate database] ***************************************************************************************************
+changed: [localhost]
+
+TASK [edx_django_service : run post-migrate commands] ******************************************************************************************
+changed: [localhost] => (item={u'when': True, u'command': u'./manage.py oscar_populate_countries --initial-only'})
+changed: [localhost] => (item={u'when': True, u'command': u'./manage.py create_or_update_site --site-id=1 --site-domain=localhost:8002 --partner-code=edX --partner-name="Open edX" --lms-url-root=http://127.0.0.1:8000 --client-side-payment-processor=cybersource --payment-processors=cybersource,paypal --client-id=ecommerce-key --client-secret=ecommerce-secret --from-email staff@example.com --discovery_api_url=http://localhost:8008/api/v1/'})
+changed: [localhost] => (item={u'when': True, u'command': u'./manage.py create_demo_data --partner=edX'})
+
+TASK [edx_django_service : migrate database] ***************************************************************************************************
+changed: [localhost]
+
+TASK [edx_django_service : run post-migrate commands] ******************************************************************************************
+
+TASK [insights : migrate] **********************************************************************************************************************
+changed: [localhost]
+
+TASK [forum : initialize elasticsearch] ********************************************************************************************************
+changed: [localhost]
+
+TASK [forum : rebuild elasticsearch indexes] ***************************************************************************************************
+skipping: [localhost]
+
+TASK [edx_django_service : migrate database] ***************************************************************************************************
+changed: [localhost]
+
+TASK [edx_django_service : run post-migrate commands] ******************************************************************************************
+
+TASK [edx_django_service : migrate database] ***************************************************************************************************
+skipping: [localhost]
+
+TASK [edx_django_service : run post-migrate commands] ******************************************************************************************
+skipping: [localhost] => (item={u'when': False, u'command': u'./manage.py create_site --sitename "DemoSite" --hostname "journals-localhost" --port "80" --lms-url-root "https://localhost:80" --lms-public-url-root-override "https://localhost:80" --discovery-api-url "https://discovery-localhost:80/api/v1/" --ecommerce-api-url "http://localhost:8002/api/v2/" --discovery-partner-id "edX" --ecommerce-partner-id "edX" --currency-codes USD --client-secret "journals-secret" --client-id "journals-key" --discovery-journal-api-url "https://discovery-localhost:80/journal/api/v1/" --ecommerce-journal-api-url "http://localhost:8002/journal/api/v1" --ecommerce-public-url-root "http://localhost:8002"\n'}) 
+skipping: [localhost] => (item={u'when': False, u'command': u'./manage.py create_org --key "edX" --sitename "DemoSite"'}) 
+skipping: [localhost] => (item={u'become_user': u'None', u'environment': {u'JOURNALS_CFG': u'/edx/etc/None.yml'}, u'when': False, u'command': u'/edx/bin/python.journals /edx/bin/manage.journals publish_journals --create "Demo Journal" --org "edX" --price "100.00"\n'}) 
+
+TASK [xqueue : Migrate] ************************************************************************************************************************
+changed: [localhost]
+
+PLAY RECAP *************************************************************************************************************************************
+localhost                  : ok=10   changed=9    unreachable=0    failed=0   
+
+INFO:/var/tmp/configuration/playbooks/callback_plugins/task_timing: migrate [0] ------------------------------------------------------------------- 501.46s
+INFO:/var/tmp/configuration/playbooks/callback_plugins/task_timing: migrate [1] -------------------------------------------------------------------- 51.60s
+INFO:/var/tmp/configuration/playbooks/callback_plugins/task_timing: migrate database [0] ----------------------------------------------------------- 46.78s
+INFO:/var/tmp/configuration/playbooks/callback_plugins/task_timing: migrate database [2] ----------------------------------------------------------- 19.80s
+INFO:/var/tmp/configuration/playbooks/callback_plugins/task_timing: Migrate ------------------------------------------------------------------------ 15.58s
+INFO:/var/tmp/configuration/playbooks/callback_plugins/task_timing: initialize elasticsearch ------------------------------------------------------- 13.51s
+INFO:/var/tmp/configuration/playbooks/callback_plugins/task_timing: run post-migrate commands [0] -------------------------------------------------- 10.29s
+INFO:/var/tmp/configuration/playbooks/callback_plugins/task_timing: migrate [2] --------------------------------------------------------------------- 7.87s
+INFO:/var/tmp/configuration/playbooks/callback_plugins/task_timing: migrate database [1] ------------------------------------------------------------ 7.74s
+INFO:/var/tmp/configuration/playbooks/callback_plugins/task_timing: Gathering Facts ----------------------------------------------------------------- 1.92s
+INFO:/var/tmp/configuration/playbooks/callback_plugins/task_timing:
+Playbook Configure instance(s) finished: 2021-06-02 06:25:13.078924, 15 total tasks.  0:11:18.096541 elapsed. 
+
+Installation finished at 2021-06-02 11:55:13
+

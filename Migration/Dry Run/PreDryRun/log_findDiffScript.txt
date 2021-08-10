@@ -1,0 +1,119 @@
+sarita@dbpsysads-desktop:~/gitLabGHI/iitbombayxdbupgrade/17Aug20/iitbombayxdbupgrade/Script/ReportScriptG$ bash findDiff.sh 
+Script start running at Date and Time is: 06/03/21 14:52:37
+
+***** The script starts to checking the unexpected differences in the data reports of the Before and After results *****
+
+
+......... Start comparison of the Mysql Files .........
+
+..... Start checking the deleted tables of the Mysql on the new machine .....
+
+Files having a list of tables, which should have been deleted but, which are present. Please check the files in the ../../Result/GHI/Test/PreDryRun/ReportResultGH/After/mysqlReports_10.129.103.26_20210602T162653 folder:
+Notdeleted_tables_edxapp.txt
+
+..... End checking the deleted tables of MySQL on the new machine .....
+
+..... Start checking the rows count of New tables of the MySQL on the new machine .....
+**** ../../Result/GHI/Test/PreDryRun/ReportResultGH/Conclusion/At_20210603T145237/MySQL
+In MySQL, Number of new tables files to compare are :2
+
+No difference found i.e. OK
+
+..... End checking the row count of New tables of the Mysql on the new machine .....
+..... Start checking the django_migrations tables of Mysql on the new machine .....
+
+The number of django_migrations are exact. No difference found i.e. OK
+
+..... End checking the django_migrations tables of the MySQL on the new machine .....
+
+
+Mysql report files to compare are 61
+Mongo report files to compare are 2
+..... Start comparison of the Mysql report Files .....
+
+Please note the files: diff_active_users.txt diff_certificatesData.txt diff_commentrolesData.txt diff_common_rows_analytics-api.txt diff_common_rows_dashboard.txt diff_common_rows_discovery.txt diff_common_rows_ecommerce.txt diff_common_rows_edxapp_csmh.txt diff_common_rows_edxapp.txt diff_common_rows_xqueue.txt diff_course_overviewcount.txt diff_facultycoursesData.txt diff_gradesData.txt diff_mongo_mysql_user_diff.txt diff_passwordData.txt diff_rolescourseData.txt diff_rolesData.txt diff_static_rows_analytics-api.txt diff_static_rows_dashboard.txt diff_static_rows_discovery.txt diff_static_rows_ecommerce.txt diff_static_rows_edxapp.txt diff_static_rows_xqueue.txt diff_studentsdata.txt diff_UGC_analytics-api_auth_permission.txt diff_UGC_analytics-api_django_content_type.txt diff_UGC_analytics-api_django_migrations.txt diff_UGC_dashboard_django_migrations.txt diff_UGC_discovery_auth_permission.txt diff_UGC_discovery_django_content_type.txt diff_UGC_discovery_django_migrations.txt diff_UGC_ecommerce_auth_permission.txt diff_UGC_ecommerce_basket_basketattributetype.txt diff_UGC_ecommerce_catalogue_category.txt diff_UGC_ecommerce_catalogue_option.txt diff_UGC_ecommerce_catalogue_productattribute.txt diff_UGC_ecommerce_catalogue_productattributevalue.txt diff_UGC_ecommerce_catalogue_productcategory.txt diff_UGC_ecommerce_catalogue_productclass.txt diff_UGC_ecommerce_catalogue_product.txt diff_UGC_ecommerce_core_siteconfiguration.txt diff_UGC_ecommerce_django_content_type.txt diff_UGC_ecommerce_django_migrations.txt diff_UGC_ecommerce_partner_partner.txt diff_UGC_ecommerce_waffle_switch.txt diff_UGC_edxapp_auth_permission.txt diff_UGC_edxapp_bookmarks_xblockcache.txt diff_UGC_edxapp_csmh_django_migrations.txt diff_UGC_edxapp_django_comment_client_permission_roles.txt diff_UGC_edxapp_django_comment_client_role.txt diff_UGC_edxapp_django_content_type.txt diff_UGC_edxapp_django_migrations.txt diff_UGC_edxapp_edxval_profile.txt diff_UGC_xqueue_django_migrations.txt diff_upgraded_rows_analytics-api.txt diff_upgraded_rows_dashboard.txt diff_upgraded_rows_discovery.txt diff_upgraded_rows_ecommerce.txt diff_upgraded_rows_edxapp_csmh.txt diff_upgraded_rows_edxapp.txt diff_upgraded_rows_xqueue.txt in the ../../Result/GHI/Test/PreDryRun/ReportResultGH/Conclusion/At_20210603T145237/MySQL/ folder, while it has differences but that is as per expectation.
+
+
+
+No difference found i.e. OK
+
+..... End comparison of the Mysql report Files .....
+......... End comparison of the Mysql Files .........
+
+
+......... Start comparison of the Mongo Files .........
+
+Please note the files: diff_output_cs_comments_service.txt in ../../Result/GHI/Test/PreDryRun/ReportResultGH/Conclusion/At_20210603T145237/Mongo/ folder, while it has diff but that is as per expectation.
+
+
+
+Please check the files: diff_diff_output_edxapp.txt in ../../Result/GHI/Test/PreDryRun/ReportResultGH/Conclusion/At_20210603T145237/Mongo/ folder.
+Why do these files have differences?
+
+......... End comparison of the Mongo Files .........
+
+
+***** End of the compare script which check unexpected differences in the databases(Before and After porting databases) *****
+Script ended at Date and Time is: 06/03/21 14:52:38
+Time(in second) taken for running row count script: 1 Sec.
+
+===============================================================================================================================
+sarita@dbpsysads-desktop:~/gitLabGHI/iitbombayxdbupgrade/17Aug20/iitbombayxdbupgrade/Script/ReportScript$ bash findDiff.sh 
+Script start running at Date and Time is: 06/03/21 14:50:33
+
+***** The script starts to checking the unexpected differences in the data reports of the Before and After results *****
+
+
+......... Start comparison of the Mysql Files .........
+
+..... Start checking the deleted tables of the Mysql on the new machine .....
+
+Files having a list of tables, which should have been deleted but, which are present. Please check the files in the ../../Result/GHI/Test/PreDryRun/ReportResultHI/After/mysqlReports_10.129.103.27_20210602T195200 folder:
+Notdeleted_tables_edxapp.txt
+
+..... End checking the deleted tables of MySQL on the new machine .....
+
+..... Start checking the rows count of New tables of the MySQL on the new machine .....
+**** ../../Result/GHI/Test/PreDryRun/ReportResultHI/Conclusion/At_20210603T145033/MySQL
+In MySQL, Number of new tables files to compare are :4
+
+No difference found i.e. OK
+
+..... End checking the row count of New tables of the Mysql on the new machine .....
+..... Start checking the django_migrations tables of Mysql on the new machine .....
+
+The number of django_migrations are exact. No difference found i.e. OK
+
+..... End checking the django_migrations tables of the MySQL on the new machine .....
+
+
+Mysql report files to compare are 59
+Mongo report files to compare are 2
+..... Start comparison of the Mysql report Files .....
+
+Please note the files: diff_active_users.txt diff_certificatesData.txt diff_commentrolesData.txt diff_common_rows_analytics-api.txt diff_common_rows_dashboard.txt diff_common_rows_discovery.txt diff_common_rows_ecommerce.txt diff_common_rows_edxapp_csmh.txt diff_common_rows_edxapp.txt diff_common_rows_xqueue.txt diff_course_overviewcount.txt diff_facultycoursesData.txt diff_gradesData.txt diff_mongo_mysql_user_diff.txt diff_rolescourseData.txt diff_rolesData.txt diff_static_rows_analytics-api.txt diff_static_rows_dashboard.txt diff_static_rows_discovery.txt diff_static_rows_ecommerce.txt diff_static_rows_edxapp.txt diff_static_rows_xqueue.txt diff_studentsdata.txt diff_UGC_analytics-api_auth_permission.txt diff_UGC_analytics-api_django_content_type.txt diff_UGC_analytics-api_django_migrations.txt diff_UGC_dashboard_django_migrations.txt diff_UGC_discovery_auth_permission.txt diff_UGC_discovery_django_content_type.txt diff_UGC_discovery_django_migrations.txt diff_UGC_ecommerce_auth_permission.txt diff_UGC_ecommerce_basket_basketattributetype.txt diff_UGC_ecommerce_catalogue_category.txt diff_UGC_ecommerce_catalogue_option.txt diff_UGC_ecommerce_catalogue_productattribute.txt diff_UGC_ecommerce_catalogue_productattributevalue.txt diff_UGC_ecommerce_catalogue_productcategory.txt diff_UGC_ecommerce_catalogue_productclass.txt diff_UGC_ecommerce_catalogue_product.txt diff_UGC_ecommerce_core_siteconfiguration.txt diff_UGC_ecommerce_django_content_type.txt diff_UGC_ecommerce_django_migrations.txt diff_UGC_ecommerce_partner_partner.txt diff_UGC_ecommerce_waffle_switch.txt diff_UGC_edxapp_auth_permission.txt diff_UGC_edxapp_bookmarks_xblockcache.txt diff_UGC_edxapp_csmh_django_migrations.txt diff_UGC_edxapp_django_comment_client_permission_roles.txt diff_UGC_edxapp_django_comment_client_role.txt diff_UGC_edxapp_django_content_type.txt diff_UGC_edxapp_django_migrations.txt diff_UGC_edxapp_edxval_profile.txt diff_UGC_xqueue_django_migrations.txt diff_upgraded_rows_analytics-api.txt diff_upgraded_rows_discovery.txt diff_upgraded_rows_ecommerce.txt diff_upgraded_rows_edxapp_csmh.txt diff_upgraded_rows_edxapp.txt diff_upgraded_rows_xqueue.txt in the ../../Result/GHI/Test/PreDryRun/ReportResultHI/Conclusion/At_20210603T145033/MySQL/ folder, while it has differences but that is as per expectation.
+
+
+
+No difference found i.e. OK
+
+..... End comparison of the Mysql report Files .....
+......... End comparison of the Mysql Files .........
+
+
+......... Start comparison of the Mongo Files .........
+
+Please note the files: diff_output_cs_comments_service.txt diff_output_edxapp.txt in ../../Result/GHI/Test/PreDryRun/ReportResultHI/Conclusion/At_20210603T145033/Mongo/ folder, while it has diff but that is as per expectation.
+
+
+
+No difference found i.e. OK
+
+......... End comparison of the Mongo Files .........
+
+
+***** End of the compare script which check unexpected differences in the databases(Before and After porting databases) *****
+Script ended at Date and Time is: 06/03/21 14:50:34
+Time(in second) taken for running row count script: 1 Sec.
+sarita@dbpsysads-desktop:~/gitLabGHI/iitbombayxdbupgrade/17Aug20/iitbombayxdbupgrade/Script/ReportScript$ 
+

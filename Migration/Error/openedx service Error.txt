@@ -1,0 +1,101 @@
+edx@edx:~$ sudo /edx/bin/supervisorctl status all
+[sudo] password for edx: 
+analytics_api                    FATAL     unknown error making dispatchers for 'analytics_api': EROFS
+certs                            FATAL     unknown error making dispatchers for 'certs': EROFS
+cms                              FATAL     unknown error making dispatchers for 'cms': EROFS
+discovery                        FATAL     unknown error making dispatchers for 'discovery': EROFS
+ecommerce                        FATAL     unknown error making dispatchers for 'ecommerce': EROFS
+ecomworker                       RUNNING   pid 2198, uptime 14:52:18
+edxapp_worker:cms_default_1      RUNNING   pid 2237, uptime 14:52:18
+edxapp_worker:cms_high_1         RUNNING   pid 2235, uptime 14:52:18
+edxapp_worker:cms_low_1          RUNNING   pid 2229, uptime 14:52:18
+edxapp_worker:lms_default_1      RUNNING   pid 2236, uptime 14:52:18
+edxapp_worker:lms_high_1         RUNNING   pid 2242, uptime 14:52:18
+edxapp_worker:lms_high_mem_1     RUNNING   pid 2234, uptime 14:52:18
+edxapp_worker:lms_low_1          RUNNING   pid 2241, uptime 14:52:18
+forum                            RUNNING   pid 2199, uptime 14:52:18
+insights                         FATAL     unknown error making dispatchers for 'insights': EROFS
+lms                              FATAL     unknown error making dispatchers for 'lms': EROFS
+notifier-celery-workers          RUNNING   pid 2203, uptime 14:52:18
+notifier-scheduler               RUNNING   pid 2221, uptime 14:52:18
+xqueue                           FATAL     unknown error making dispatchers for 'xqueue': EROFS
+xqueue_consumer                  RUNNING   pid 2213, uptime 14:52:18
+edx@edx:~$ sudo /edx/bin/supervisorctl stop all
+notifier-scheduler: stopped
+ecomworker: stopped
+xqueue_consumer: stopped
+forum: stopped
+notifier-celery-workers: stopped
+edxapp_worker:cms_low_1: stopped
+edxapp_worker:lms_high_1: stopped
+edxapp_worker:cms_high_1: stopped
+edxapp_worker:lms_default_1: stopped
+edxapp_worker:lms_high_mem_1: stopped
+edxapp_worker:cms_default_1: stopped
+edxapp_worker:lms_low_1: stopped
+edx@edx:~$ sudo /edx/bin/supervisorctl start all
+xqueue: ERROR (spawn error)
+ecomworker: ERROR (spawn error)
+forum: ERROR (spawn error)
+notifier-celery-workers: ERROR (spawn error)
+lms: ERROR (spawn error)
+analytics_api: ERROR (spawn error)
+xqueue_consumer: ERROR (spawn error)
+certs: ERROR (spawn error)
+notifier-scheduler: ERROR (spawn error)
+insights: ERROR (spawn error)
+cms: ERROR (spawn error)
+ecommerce: ERROR (spawn error)
+edxapp_worker:cms_low_1: ERROR (spawn error)
+edxapp_worker:lms_high_mem_1: ERROR (spawn error)
+edxapp_worker:cms_high_1: ERROR (spawn error)
+edxapp_worker:lms_default_1: ERROR (spawn error)
+edxapp_worker:cms_default_1: ERROR (spawn error)
+edxapp_worker:lms_low_1: ERROR (spawn error)
+edxapp_worker:lms_high_1: ERROR (spawn error)
+discovery: ERROR (spawn error)
+edx@edx:~$ sudo /edx/bin/supervisorctl status all
+analytics_api                    FATAL     unknown error making dispatchers for 'analytics_api': EROFS
+certs                            FATAL     unknown error making dispatchers for 'certs': EROFS
+cms                              FATAL     unknown error making dispatchers for 'cms': EROFS
+discovery                        FATAL     unknown error making dispatchers for 'discovery': EROFS
+ecommerce                        FATAL     unknown error making dispatchers for 'ecommerce': EROFS
+ecomworker                       FATAL     unknown error making dispatchers for 'ecomworker': EROFS
+edxapp_worker:cms_default_1      FATAL     unknown error making dispatchers for 'cms_default_1': EROFS
+edxapp_worker:cms_high_1         FATAL     unknown error making dispatchers for 'cms_high_1': EROFS
+edxapp_worker:cms_low_1          FATAL     unknown error making dispatchers for 'cms_low_1': EROFS
+edxapp_worker:lms_default_1      FATAL     unknown error making dispatchers for 'lms_default_1': EROFS
+edxapp_worker:lms_high_1         FATAL     unknown error making dispatchers for 'lms_high_1': EROFS
+edxapp_worker:lms_high_mem_1     FATAL     unknown error making dispatchers for 'lms_high_mem_1': EROFS
+edxapp_worker:lms_low_1          FATAL     unknown error making dispatchers for 'lms_low_1': EROFS
+forum                            FATAL     unknown error making dispatchers for 'forum': EROFS
+insights                         FATAL     unknown error making dispatchers for 'insights': EROFS
+lms                              FATAL     unknown error making dispatchers for 'lms': EROFS
+notifier-celery-workers          FATAL     unknown error making dispatchers for 'notifier-celery-workers': EROFS
+notifier-scheduler               FATAL     unknown error making dispatchers for 'notifier-scheduler': EROFS
+xqueue                           FATAL     unknown error making dispatchers for 'xqueue': EROFS
+xqueue_consumer                  FATAL     unknown error making dispatchers for 'xqueue_consumer': EROFS
+edx@edx:~$ sudo /edx/bin/supervisorctl stop all
+edx@edx:~$ sudo /edx/bin/supervisorctl status all
+analytics_api                    FATAL     unknown error making dispatchers for 'analytics_api': EROFS
+certs                            FATAL     unknown error making dispatchers for 'certs': EROFS
+cms                              FATAL     unknown error making dispatchers for 'cms': EROFS
+discovery                        FATAL     unknown error making dispatchers for 'discovery': EROFS
+ecommerce                        FATAL     unknown error making dispatchers for 'ecommerce': EROFS
+ecomworker                       FATAL     unknown error making dispatchers for 'ecomworker': EROFS
+edxapp_worker:cms_default_1      FATAL     unknown error making dispatchers for 'cms_default_1': EROFS
+edxapp_worker:cms_high_1         FATAL     unknown error making dispatchers for 'cms_high_1': EROFS
+edxapp_worker:cms_low_1          FATAL     unknown error making dispatchers for 'cms_low_1': EROFS
+edxapp_worker:lms_default_1      FATAL     unknown error making dispatchers for 'lms_default_1': EROFS
+edxapp_worker:lms_high_1         FATAL     unknown error making dispatchers for 'lms_high_1': EROFS
+edxapp_worker:lms_high_mem_1     FATAL     unknown error making dispatchers for 'lms_high_mem_1': EROFS
+edxapp_worker:lms_low_1          FATAL     unknown error making dispatchers for 'lms_low_1': EROFS
+forum                            FATAL     unknown error making dispatchers for 'forum': EROFS
+insights                         FATAL     unknown error making dispatchers for 'insights': EROFS
+lms                              FATAL     unknown error making dispatchers for 'lms': EROFS
+notifier-celery-workers          FATAL     unknown error making dispatchers for 'notifier-celery-workers': EROFS
+notifier-scheduler               FATAL     unknown error making dispatchers for 'notifier-scheduler': EROFS
+xqueue                           FATAL     unknown error making dispatchers for 'xqueue': EROFS
+xqueue_consumer                  FATAL     unknown error making dispatchers for 'xqueue_consumer': EROFS
+edx@edx:~$ 
+

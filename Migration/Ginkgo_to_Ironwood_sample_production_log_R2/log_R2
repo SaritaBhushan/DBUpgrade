@@ -1,0 +1,1719 @@
+Ginkgo 82
+=======================================================================================================================================
+-- Take Dump
+bash dump.sh
+ mkdir G82_R2
+ mv mongo-dump-20200811T130914/ G82_R2/
+ mv mysql-structure-data-20200811T130914.sql G82_R2/
+ 
+mongo -u admin -p password localhost:27017 --authenticationDatabase admin
+MongoDB shell version: 2.6.12
+connecting to: localhost:27017/test
+> show dbs
+admin                 0.031GB
+cs_comments_service   1.000GB
+edxapp               43.979GB
+local                 0.031GB
+test                  (empty)
+> use cs_comments_service;
+switched to db cs_comments_service
+> show collections;
+contents
+subscriptions
+system.indexes
+users
+> use edxapp
+switched to db edxapp
+> show collections;
+assetstore
+fs.chunks
+fs.files
+modulestore
+modulestore.active_versions
+modulestore.definitions
+modulestore.structures
+system.indexes
+> 
+
+> 
+=======================================================================================================================================
+
+Hawthorn H26:
+=======================================================================================================================================
+For Hawthorn
+Fresh Start............................
+On Remote
+sudo scp -r FH26/  edx@10.129.103.26:/Database/mig
+On Hawthorn
+mongo -u admin -p password localhost:27017 --authenticationDatabase admin
+show dbs
+use cs_comments_service;
+db.dropDatabase();
+use edxapp;
+db.dropDatabase();
+show dbs
+exit
+
+edx@edx:/Database/mig$ mysql -uroot -p < FH26/mysql-structure-data-20200702T181904.sql
+edx@edx:/Database/mig$ mongorestore -u admin -p password -h localhost --authenticationDatabase admin --drop -d edxapp FH26/mongo-dump-20200702T181904/edxapp
+edx@edx:/Database/mig$ mongorestore -u admin -p password -h localhost --authenticationDatabase admin --drop -d cs_comments_service  FH26/mongo-dump-20200702T181904/cs_comments_service
+............................Fresh Done.
+
+=======================================================================================================================================
+
+Ironwood I27
+=======================================================================================================================================
+Fresh Start............................
+mongo -u edxadmin -p  password localhost:27017/edxapp --authenticationDatabase admin
+show dbs
+use cs_comments_service;
+db.dropDatabase();
+use edxapp;
+db.dropDatabase();
+show dbs
+exit
+
+ mysql -uroot -p < FI27/mysql-structure-data-20200702T182214.sql
+ mongorestore -u edxadmin -p password -h localhost --authenticationDatabase admin --drop -d edxapp FI27/mongo-dump-20200702T182214/edxapp
+ mongorestore -u edxadmin -p password -h localhost --authenticationDatabase admin --drop -d cs_comments_service  FI27/mongo-dump-20200702T182214/cs_comments_service
+............................Fresh Done.
+=======================================================================================================================================
+
+Restore Ginkgo.2 on Hawthorn.2 machine
+=======================================================================================================================================
+Restore Start............................
+vi Restore.sh
+date
+mysql -uroot -p < G82_R2/mysql-structure-data-20200811T171058.sql
+date
+date
+mongorestore -u admin -p password -h localhost --authenticationDatabase admin --drop -d edxapp G82_R2/mongo-dump-20200811T171058/edxapp
+mongorestore -u admin -p password -h localhost --authenticationDatabase admin --drop -d cs_comments_service G82_R2/mongo-dump-20200811T171058/cs_comments_service
+date
+
+bash vi Restore.sh
+=======================================================================================================================================
+On Ginkgo.2
+=======================================================================================================================================
+edx@edx:~$ mongo -u admin -p password localhost:27017 --authenticationDatabase admin
+MongoDB shell version: 2.6.12
+connecting to: localhost:27017/test
+> show dbs
+admin                 0.031GB
+cs_comments_service   1.000GB
+edxapp               43.979GB
+local                 0.031GB
+test                  (empty)
+> 
+> use cs_comments_service
+switched to db cs_comments_service
+> show collections;
+contents
+subscriptions
+system.indexes
+users
+> db.contents.count();
+281122
+> db.subscriptions.count();
+88780
+> db.system.indexes.count();
+6
+> db.system.indexes.find();
+{ "v" : 1, "key" : { "_id" : 1 }, "name" : "_id_", "ns" : "cs_comments_service.contents" }
+{ "v" : 1, "key" : { "_type" : 1, "course_id" : 1, "context" : 1, "pinned" : -1, "created_at" : -1 }, "name" : "_type_1_course_id_1_context_1_pinned_-1_created_at_-1", "ns" : "cs_comments_service.contents", "background" : true }
+{ "v" : 1, "key" : { "_type" : 1, "commentable_id" : 1, "context" : 1, "pinned" : -1, "created_at" : -1 }, "name" : "_type_1_commentable_id_1_context_1_pinned_-1_created_at_-1", "ns" : "cs_comments_service.contents", "background" : true }
+{ "v" : 1, "key" : { "comment_thread_id" : 1, "author_id" : 1, "created_at" : 1 }, "name" : "comment_thread_id_1_author_id_1_created_at_1", "ns" : "cs_comments_service.contents", "background" : true }
+{ "v" : 1, "key" : { "_id" : 1 }, "name" : "_id_", "ns" : "cs_comments_service.subscriptions" }
+{ "v" : 1, "key" : { "_id" : 1 }, "name" : "_id_", "ns" : "cs_comments_service.users" }
+> db.users.count();
+216500
+> show users;
+{
+	"_id" : "cs_comments_service.cs_comments_service",
+	"user" : "cs_comments_service",
+	"db" : "cs_comments_service",
+	"roles" : [
+		{
+			"role" : "readWrite",
+			"db" : "cs_comments_service"
+		}
+	]
+}
+> 
+> use edxapp;
+switched to db edxapp
+> show collections;
+assetstore
+fs.chunks
+fs.files
+modulestore
+modulestore.active_versions
+modulestore.definitions
+modulestore.structures
+system.indexes
+> db.assetstore.count();
+55
+> db.fs.chunks.count();
+71647
+> db.fs.files.count();
+52758
+> db.modulestore.count();
+53005
+> db.modulestore.active_versions.count();
+139
+> db.modulestore.definitions.count();
+65020
+> db.modulestore.structures.count();
+102203
+> db.system.indexes.count();
+8
+> db.system.indexes.find();
+{ "v" : 1, "key" : { "_id" : 1 }, "name" : "_id_", "ns" : "edxapp.modulestore.active_versions" }
+{ "v" : 1, "key" : { "_id" : 1 }, "name" : "_id_", "ns" : "edxapp.modulestore.structures" }
+{ "v" : 1, "key" : { "_id" : 1 }, "name" : "_id_", "ns" : "edxapp.modulestore.definitions" }
+{ "v" : 1, "key" : { "_id" : 1 }, "name" : "_id_", "ns" : "edxapp.fs.files" }
+{ "v" : 1, "key" : { "_id" : 1 }, "name" : "_id_", "ns" : "edxapp.modulestore" }
+{ "v" : 1, "key" : { "_id" : 1 }, "name" : "_id_", "ns" : "edxapp.fs.chunks" }
+{ "v" : 1, "unique" : true, "key" : { "files_id" : 1, "n" : 1 }, "name" : "files_id_1_n_1", "ns" : "edxapp.fs.chunks" }
+{ "v" : 1, "key" : { "_id" : 1 }, "name" : "_id_", "ns" : "edxapp.assetstore" }
+> show users;
+{
+	"_id" : "edxapp.edxapp",
+	"user" : "edxapp",
+	"db" : "edxapp",
+	"roles" : [
+		{
+			"role" : "readWrite",
+			"db" : "edxapp"
+		}
+	]
+}
+
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| analytics-api      |
+| dashboard          |
+| discovery          |
+| ecommerce          |
+| edxapp             |
+| edxapp_csmh        |
+| mysql              |
+| performance_schema |
+| programs           |
+| reports            |
+| xqueue             |
++--------------------+
+12 rows in set (0.00 sec)
+
+mysql> SELECT COUNT(*), TABLE_SCHEMA 
+    -> FROM `information_schema`.`TABLES` 
+    -> WHERE TABLE_SCHEMA
+    -> NOT IN ('mysql','information_schema','performance_schema')
+    -> GROUP BY  TABLE_SCHEMA;
++----------+---------------+
+| COUNT(*) | TABLE_SCHEMA  |
++----------+---------------+
+|       12 | analytics-api |
+|       23 | dashboard     |
+|      103 | discovery     |
+|      139 | ecommerce     |
+|      357 | edxapp        |
+|        2 | edxapp_csmh   |
+|       22 | programs      |
+|       11 | xqueue        |
++----------+---------------+
+8 rows in set (0.04 sec)
+
+mysql> SELECT * FROM information_schema.SCHEMATA;
++--------------+--------------------+----------------------------+------------------------+----------+
+| CATALOG_NAME | SCHEMA_NAME        | DEFAULT_CHARACTER_SET_NAME | DEFAULT_COLLATION_NAME | SQL_PATH |
++--------------+--------------------+----------------------------+------------------------+----------+
+| def          | information_schema | utf8                       | utf8_general_ci        | NULL     |
+| def          | analytics-api      | utf8                       | utf8_general_ci        | NULL     |
+| def          | dashboard          | utf8                       | utf8_general_ci        | NULL     |
+| def          | discovery          | utf8                       | utf8_general_ci        | NULL     |
+| def          | ecommerce          | utf8                       | utf8_general_ci        | NULL     |
+| def          | edxapp             | utf8                       | utf8_general_ci        | NULL     |
+| def          | edxapp_csmh        | utf8                       | utf8_general_ci        | NULL     |
+| def          | mysql              | latin1                     | latin1_swedish_ci      | NULL     |
+| def          | performance_schema | utf8                       | utf8_general_ci        | NULL     |
+| def          | programs           | utf8                       | utf8_general_ci        | NULL     |
+| def          | reports            | utf8                       | utf8_general_ci        | NULL     |
+| def          | xqueue             | utf8                       | utf8_general_ci        | NULL     |
++--------------+--------------------+----------------------------+------------------------+----------+
+12 rows in set (0.00 sec)
+=======================================================================================================================================
+On restore Hawthorn.2
+=======================================================================================================================================
+s0:PRIMARY> show dbs
+admin                 0.000GB
+cs_comments_service   0.132GB
+edxapp               14.314GB
+local                 2.187GB
+rs0:PRIMARY> 
+rs0:PRIMARY> use cs_comments_service
+switched to db cs_comments_service
+rs0:PRIMARY> show collections;
+contents
+subscriptions
+users
+rs0:PRIMARY> db.contents.count();
+281122
+rs0:PRIMARY> db.subscriptions.count();
+88780
+rs0:PRIMARY> db.users.count();
+216500
+rs0:PRIMARY> show users;
+{
+	"_id" : "cs_comments_service.cs_comments_service",
+	"user" : "cs_comments_service",
+	"db" : "cs_comments_service",
+	"roles" : [
+		{
+			"role" : "readWrite",
+			"db" : "cs_comments_service"
+		}
+	]
+}
+rs0:PRIMARY> 
+rs0:PRIMARY> use edxapp;
+switched to db edxapp
+rs0:PRIMARY> show collections;
+assetstore
+fs.chunks
+fs.files
+modulestore
+modulestore.active_versions
+modulestore.definitions
+modulestore.structures
+rs0:PRIMARY> db.assetstore.count();
+55
+rs0:PRIMARY> db.fs.chunks.count();
+71647
+rs0:PRIMARY> db.fs.files.count();
+52758
+rs0:PRIMARY> db.modulestore.count();
+53005
+rs0:PRIMARY> db.modulestore.active_versions.count();
+139
+rs0:PRIMARY> db.modulestore.definitions.count();
+65020
+rs0:PRIMARY> db.modulestore.structures.count();
+102203
+rs0:PRIMARY> show users;
+{
+	"_id" : "edxapp.edxapp",
+	"user" : "edxapp",
+	"db" : "edxapp",
+	"roles" : [
+		{
+			"role" : "readWrite",
+			"db" : "edxapp"
+		}
+	]
+}
+rs0:PRIMARY> 
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| analytics-api      |
+| dashboard          |
+| discovery          |
+| ecommerce          |
+| edxapp             |
+| edxapp_csmh        |
+| mysql              |
+| performance_schema |
+| programs           |
+| reports            |
+| xqueue             |
++--------------------+
+12 rows in set (0.00 sec)
+
+mysql> SELECT COUNT(*), TABLE_SCHEMA 
+    -> FROM `information_schema`.`TABLES` 
+    -> WHERE TABLE_SCHEMA
+    -> NOT IN ('mysql','information_schema','performance_schema')
+    -> GROUP BY  TABLE_SCHEMA;
++----------+---------------+
+| COUNT(*) | TABLE_SCHEMA  |
++----------+---------------+
+|       12 | analytics-api |
+|       23 | dashboard     |
+|      103 | discovery     |
+|      139 | ecommerce     |
+|      357 | edxapp        |
+|        2 | edxapp_csmh   |
+|       22 | programs      |
+|       11 | xqueue        |
++----------+---------------+
+8 rows in set (0.01 sec)
+
+mysql> SELECT * FROM information_schema.SCHEMATA;
++--------------+--------------------+----------------------------+------------------------+----------+
+| CATALOG_NAME | SCHEMA_NAME        | DEFAULT_CHARACTER_SET_NAME | DEFAULT_COLLATION_NAME | SQL_PATH |
++--------------+--------------------+----------------------------+------------------------+----------+
+| def          | information_schema | utf8                       | utf8_general_ci        | NULL     |
+| def          | analytics-api      | utf8                       | utf8_general_ci        | NULL     |
+| def          | dashboard          | utf8                       | utf8_general_ci        | NULL     |
+| def          | discovery          | utf8                       | utf8_general_ci        | NULL     |
+| def          | ecommerce          | utf8                       | utf8_general_ci        | NULL     |
+| def          | edxapp             | utf8                       | utf8_general_ci        | NULL     |
+| def          | edxapp_csmh        | utf8                       | utf8_general_ci        | NULL     |
+| def          | mysql              | latin1                     | latin1_swedish_ci      | NULL     |
+| def          | performance_schema | utf8                       | utf8_general_ci        | NULL     |
+| def          | programs           | utf8                       | utf8_general_ci        | NULL     |
+| def          | reports            | utf8                       | utf8_general_ci        | NULL     |
+| def          | xqueue             | utf8                       | utf8_general_ci        | NULL     |
++--------------+--------------------+----------------------------+------------------------+----------+
+12 rows in set (0.00 sec)
+edx@edx:~$ mysql -u root -p edxapp
+Enter password: 
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 4674503
+Server version: 5.6.32-1+deb.sury.org~xenial+0.1 (Ubuntu)
+
+Copyright (c) 2000, 2016, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> select @@global.FOREIGN_KEY_CHECKS;
++-----------------------------+
+| @@global.FOREIGN_KEY_CHECKS |
++-----------------------------+
+|                           1 |
++-----------------------------+
+1 row in set (0.00 sec)
+
+mysql> select @@FOREIGN_KEY_CHECKS;
++----------------------+
+| @@FOREIGN_KEY_CHECKS |
++----------------------+
+|                    1 |
++----------------------+
+1 row in set (0.00 sec)
+
+mysql> ^DBye
+edx@edx:~$ sudo su - -s /bin/bash edxapp
+[sudo] password for edx: 
+edxapp@edx:~$ . edxapp_env
+edxapp@edx:~$ cd edx-platform/
+edxapp@edx:~/edx-platform$ python manage.py lms drop_djcelery_tables --settings=aws
+2020-08-12 06:34:14,782 INFO 12509 [dd.dogapi] dog_stats_api.py:66 - Initializing dog api to use statsd: localhost, 8125
+2020-08-12 06:34:19,580 INFO 12509 [celery_utils.management.commands.drop_djcelery_tables] drop_djcelery_tables.py:51 - Acquiring tables locks on `djcelery_periodictask`, `djcelery_taskstate`, `djcelery_periodictasks`, `celery_taskmeta`, `djcelery_workerstate`, `djcelery_intervalschedule`, `djcelery_crontabschedule`, `celery_tasksetmeta`
+2020-08-12 06:34:19,581 INFO 12509 [celery_utils.management.commands.drop_djcelery_tables] drop_djcelery_tables.py:45 - table lock raw SQL:
+LOCK TABLES `djcelery_periodictask` WRITE, `djcelery_taskstate` WRITE, `djcelery_periodictasks` WRITE, `celery_taskmeta` WRITE, `djcelery_workerstate` WRITE, `djcelery_intervalschedule` WRITE, `djcelery_crontabschedule` WRITE, `celery_tasksetmeta` WRITE
+2020-08-12 06:34:19,777 INFO 12509 [celery_utils.management.commands.drop_djcelery_tables] drop_djcelery_tables.py:62 - Tables are confirmed empty and I hold a lock on all of them, proceeding to DROP TABLE
+2020-08-12 06:34:19,778 INFO 12509 [celery_utils.management.commands.drop_djcelery_tables] drop_djcelery_tables.py:45 - drop `djcelery_periodictask` raw SQL:
+DROP TABLE IF EXISTS `djcelery_periodictask` CASCADE
+2020-08-12 06:34:20,162 INFO 12509 [celery_utils.management.commands.drop_djcelery_tables] drop_djcelery_tables.py:45 - drop `djcelery_taskstate` raw SQL:
+DROP TABLE IF EXISTS `djcelery_taskstate` CASCADE
+2020-08-12 06:34:20,352 INFO 12509 [celery_utils.management.commands.drop_djcelery_tables] drop_djcelery_tables.py:45 - drop `djcelery_periodictasks` raw SQL:
+DROP TABLE IF EXISTS `djcelery_periodictasks` CASCADE
+2020-08-12 06:34:20,400 INFO 12509 [celery_utils.management.commands.drop_djcelery_tables] drop_djcelery_tables.py:45 - drop `celery_taskmeta` raw SQL:
+DROP TABLE IF EXISTS `celery_taskmeta` CASCADE
+Traceback (most recent call last):
+  File "manage.py", line 121, in <module>
+    execute_from_command_line([sys.argv[0]] + django_args)
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/core/management/__init__.py", line 364, in execute_from_command_line
+    utility.execute()
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/core/management/__init__.py", line 356, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/core/management/base.py", line 283, in run_from_argv
+    self.execute(*args, **cmd_options)
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/core/management/base.py", line 330, in execute
+    output = self.handle(*args, **options)
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/celery_utils/management/commands/drop_djcelery_tables.py", line 66, in handle
+    self._log_execute(cursor, drop_sql, "drop {}".format(table_name))
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/celery_utils/management/commands/drop_djcelery_tables.py", line 46, in _log_execute
+    cursor.execute(sql)
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/backends/utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/utils.py", line 94, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/backends/utils.py", line 62, in execute
+    return self.cursor.execute(sql)
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/django/db/backends/mysql/base.py", line 101, in execute
+    return self.cursor.execute(query, args)
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/MySQLdb/cursors.py", line 205, in execute
+    self.errorhandler(self, exc, value)
+  File "/edx/app/edxapp/venvs/edxapp/local/lib/python2.7/site-packages/MySQLdb/connections.py", line 36, in defaulterrorhandler
+    raise errorclass, errorvalue
+django.db.utils.IntegrityError: (1217, 'Cannot delete or update a parent row: a foreign key constraint fails')
+edxapp@edx:~/edx-platform$ exit
+logout
+
+
+=======================================================================================================================================
+show dbs
+
+use cs_comments_service
+show collections;
+db.contents.count();
+db.subscriptions.count();
+db.users.count();
+show users;
+
+use edxapp;
+show collections;
+db.assetstore.count();
+db.fs.chunks.count();
+db.fs.files.count();
+db.modulestore.count();
+db.modulestore.active_versions.count();
+db.modulestore.definitions.count();
+db.modulestore.structures.count();
+show users;
+=======================================================================================================================================
+for HI
+On Hawthorn
+=======================================================================================================================================
+edx@edx:~$ mysql -u root -p edxapp
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| analytics-api      |
+| dashboard          |
+| discovery          |
+| ecommerce          |
+| edxapp             |
+| edxapp_csmh        |
+| mysql              |
+| performance_schema |
+| programs           |
+| reports            |
+| xqueue             |
++--------------------+
+12 rows in set (0.00 sec)
+
+mysql> SELECT COUNT(*), TABLE_SCHEMA 
+    -> FROM `information_schema`.`TABLES` 
+    -> WHERE TABLE_SCHEMA
+    -> NOT IN ('mysql','information_schema','performance_schema')
+    -> GROUP BY  TABLE_SCHEMA;
++----------+---------------+
+| COUNT(*) | TABLE_SCHEMA  |
++----------+---------------+
+|       12 | analytics-api |
+|       23 | dashboard     |
+|      103 | discovery     |
+|      131 | ecommerce     |
+|      376 | edxapp        |
+|        2 | edxapp_csmh   |
+|       22 | programs      |
+|       11 | xqueue        |
++----------+---------------+
+8 rows in set (3.32 sec)
+
+mysql> SELECT * FROM information_schema.SCHEMATA;
++--------------+--------------------+----------------------------+------------------------+----------+
+| CATALOG_NAME | SCHEMA_NAME        | DEFAULT_CHARACTER_SET_NAME | DEFAULT_COLLATION_NAME | SQL_PATH |
++--------------+--------------------+----------------------------+------------------------+----------+
+| def          | information_schema | utf8                       | utf8_general_ci        | NULL     |
+| def          | analytics-api      | utf8                       | utf8_general_ci        | NULL     |
+| def          | dashboard          | utf8                       | utf8_general_ci        | NULL     |
+| def          | discovery          | utf8                       | utf8_general_ci        | NULL     |
+| def          | ecommerce          | utf8                       | utf8_general_ci        | NULL     |
+| def          | edxapp             | utf8                       | utf8_general_ci        | NULL     |
+| def          | edxapp_csmh        | utf8                       | utf8_general_ci        | NULL     |
+| def          | mysql              | latin1                     | latin1_swedish_ci      | NULL     |
+| def          | performance_schema | utf8                       | utf8_general_ci        | NULL     |
+| def          | programs           | utf8                       | utf8_general_ci        | NULL     |
+| def          | reports            | utf8                       | utf8_general_ci        | NULL     |
+| def          | xqueue             | utf8                       | utf8_general_ci        | NULL     |
++--------------+--------------------+----------------------------+------------------------+----------+
+12 rows in set (0.10 sec)
+
+mysql> SELECT `TABLE_NAME`  FROM information_schema.`TABLES`  WHERE `TABLE_SCHEMA`='edxapp' and `TABLE_NAME` like "%celery%";
++------------------------------------------+
+| TABLE_NAME                               |
++------------------------------------------+
+| celery_taskmeta                          |
+| celery_tasksetmeta                       |
+| celery_utils_chorddata                   |
+| celery_utils_chorddata_completed_results |
+| celery_utils_failedtask                  |
+| djcelery_crontabschedule                 |
+| djcelery_intervalschedule                |
+| djcelery_workerstate                     |
++------------------------------------------+
+8 rows in set (0.01 sec)
+
+edx@edx:~$ mongo -u admin -p password localhost:27017 --authenticationDatabase admin
+MongoDB shell version: 3.2.21
+connecting to: localhost:27017/test
+rs0:PRIMARY> show dbs
+admin                 0.000GB
+cs_comments_service   0.132GB
+edxapp               14.314GB
+local                 2.182GB
+rs0:PRIMARY> 
+rs0:PRIMARY> use cs_comments_service
+switched to db cs_comments_service
+rs0:PRIMARY> show collections;
+contents
+subscriptions
+users
+rs0:PRIMARY> db.contents.count();
+281122
+rs0:PRIMARY> db.subscriptions.count();
+88780
+rs0:PRIMARY> db.users.count();
+216500
+rs0:PRIMARY> show users;
+{
+	"_id" : "cs_comments_service.cs_comments_service",
+	"user" : "cs_comments_service",
+	"db" : "cs_comments_service",
+	"roles" : [
+		{
+			"role" : "readWrite",
+			"db" : "cs_comments_service"
+		}
+	]
+}
+rs0:PRIMARY> 
+rs0:PRIMARY> use edxapp;
+switched to db edxapp
+rs0:PRIMARY> show collections;
+assetstore
+fs.chunks
+fs.files
+modulestore
+modulestore.active_versions
+modulestore.definitions
+modulestore.structures
+rs0:PRIMARY> db.assetstore.count();
+55
+rs0:PRIMARY> db.fs.chunks.count();
+71647
+rs0:PRIMARY> db.fs.files.count();
+52758
+rs0:PRIMARY> db.modulestore.count();
+53005
+rs0:PRIMARY> db.modulestore.active_versions.count();
+139
+rs0:PRIMARY> db.modulestore.definitions.count();
+65020
+rs0:PRIMARY> db.modulestore.structures.count();
+102203
+rs0:PRIMARY> show users;
+{
+	"_id" : "edxapp.edxapp",
+	"user" : "edxapp",
+	"db" : "edxapp",
+	"roles" : [
+		{
+			"role" : "readWrite",
+			"db" : "edxapp"
+		}
+	]
+}
+rs0:PRIMARY> 
+=======================================================================================================================================
+on Ironwood.master
+=======================================================================================================================================
+mysql> SELECT COUNT(*), TABLE_SCHEMA 
+    -> FROM `information_schema`.`TABLES` 
+    -> WHERE TABLE_SCHEMA
+    -> NOT IN ('mysql','information_schema','performance_schema')
+    -> GROUP BY  TABLE_SCHEMA;
+
++----------+---------------+
+| COUNT(*) | TABLE_SCHEMA  |
++----------+---------------+
+|       12 | analytics-api |
+|       23 | dashboard     |
+|      103 | discovery     |
+|      131 | ecommerce     |
+|      376 | edxapp        |
+|        2 | edxapp_csmh   |
+|       22 | programs      |
+|       11 | xqueue        |
++----------+---------------+
+8 rows in set (1.32 sec)
+
+mysql> 
+mysql> SELECT * FROM information_schema.SCHEMATA;
++--------------+--------------------+----------------------------+------------------------+----------+
+| CATALOG_NAME | SCHEMA_NAME        | DEFAULT_CHARACTER_SET_NAME | DEFAULT_COLLATION_NAME | SQL_PATH |
++--------------+--------------------+----------------------------+------------------------+----------+
+| def          | information_schema | utf8                       | utf8_general_ci        | NULL     |
+| def          | analytics-api      | utf8                       | utf8_general_ci        | NULL     |
+| def          | dashboard          | utf8                       | utf8_general_ci        | NULL     |
+| def          | discovery          | utf8                       | utf8_general_ci        | NULL     |
+| def          | ecommerce          | utf8                       | utf8_general_ci        | NULL     |
+| def          | edxapp             | utf8                       | utf8_general_ci        | NULL     |
+| def          | edxapp_csmh        | utf8                       | utf8_general_ci        | NULL     |
+| def          | mysql              | utf8                       | utf8_general_ci        | NULL     |
+| def          | performance_schema | utf8                       | utf8_general_ci        | NULL     |
+| def          | programs           | utf8                       | utf8_general_ci        | NULL     |
+| def          | reports            | utf8                       | utf8_general_ci        | NULL     |
+| def          | xqueue             | utf8                       | utf8_general_ci        | NULL     |
++--------------+--------------------+----------------------------+------------------------+----------+
+12 rows in set (0.02 sec)
+
+mysql> SELECT `TABLE_NAME`  FROM information_schema.`TABLES`  WHERE `TABLE_SCHEMA`='edxapp' and `TABLE_NAME` like "%celery%";                   +------------------------------------------+
+| TABLE_NAME                               |
++------------------------------------------+
+| celery_taskmeta                          |
+| celery_tasksetmeta                       |
+| celery_utils_chorddata                   |
+| celery_utils_chorddata_completed_results |
+| celery_utils_failedtask                  |
+| djcelery_crontabschedule                 |
+| djcelery_intervalschedule                |
+| djcelery_workerstate                     |
++------------------------------------------+
+8 rows in set (0.01 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| analytics-api      |
+| dashboard          |
+| discovery          |
+| ecommerce          |
+| edxapp             |
+| edxapp_csmh        |
+| mysql              |
+| performance_schema |
+| programs           |
+| reports            |
+| xqueue             |
++--------------------+
+12 rows in set (0.01 sec)
+
+mysql> ^DBye
+edx@edx:~$ mongo -u edxadmin -p  password localhost:27017/edxapp --authenticationDatabase admin
+MongoDB shell version: 3.2.16
+connecting to: localhost:27017/edxapp
+rs0:PRIMARY> show dbs
+admin                 0.000GB
+cs_comments_service   0.132GB
+edxapp               14.313GB
+local                 2.205GB
+rs0:PRIMARY> 
+rs0:PRIMARY> use cs_comments_service
+switched to db cs_comments_service
+rs0:PRIMARY> show collections;
+contents
+subscriptions
+users
+rs0:PRIMARY> db.contents.count();
+281122
+rs0:PRIMARY> db.subscriptions.count();
+88780
+rs0:PRIMARY> db.users.count();
+216500
+rs0:PRIMARY> show users;
+{
+	"_id" : "cs_comments_service.cs_comments_service",
+	"user" : "cs_comments_service",
+	"db" : "cs_comments_service",
+	"roles" : [
+		{
+			"role" : "readWrite",
+			"db" : "cs_comments_service"
+		}
+	]
+}
+rs0:PRIMARY> 
+rs0:PRIMARY> use edxapp;
+switched to db edxapp
+rs0:PRIMARY> show collections;
+assetstore
+fs.chunks
+fs.files
+modulestore
+modulestore.active_versions
+modulestore.definitions
+modulestore.structures
+rs0:PRIMARY> db.assetstore.count();
+55
+rs0:PRIMARY> db.fs.chunks.count();
+71647
+rs0:PRIMARY> db.fs.files.count();
+52758
+rs0:PRIMARY> db.modulestore.count();
+53005
+rs0:PRIMARY> db.modulestore.active_versions.count();
+139
+rs0:PRIMARY> db.modulestore.definitions.count();
+65020
+rs0:PRIMARY> db.modulestore.structures.count();
+102203
+rs0:PRIMARY> show users;
+{
+	"_id" : "edxapp.edxapp",
+	"user" : "edxapp",
+	"db" : "edxapp",
+	"roles" : [
+		{
+			"role" : "readWrite",
+			"db" : "edxapp"
+		}
+	]
+}
+rs0:PRIMARY> 
+bye
+
+=======================================================================================================================================
+sarita@dbpsysads-desktop:~/gitLabGHI/iitbombayxdbupgrade/02July20/iitbombayxdbupgrade/Script/RecordCountScript$ bash count_rows.sh 
+Script start runing at Date and Time is: 08/13/20 19:17:36
+
+---------------------------- Start of rows Count -------------------------------------
+
+
+
+MySQL script start runing at Date and Time is: 08/13/20 19:17:36
+@@@ The Script Start to finding the number of rows in the MySQL tables on the 10.129.103.27 server. @@@
+
+***** MySQL Rows Count Start *****
+
+..... A directory ../../Result/GHI/Test/Round2/RecordCountResult/Rows_10.129.103.27/MySQL is Created for the MySQL record count result .....
+
+..... Check MySQL Connection .....
+Warning: Using a password on the command line interface can be insecure.
+
+..... MySQL Database Connection Successful on the 10.129.103.27 server. .....
+
+Reading MySQL database names...
+Warning: Using a password on the command line interface can be insecure.
+
+..... Running for counting rows of the tables of all user databases .....
+
+	... Running for analytics-api database tables list ...
+Warning: Using a password on the command line interface can be insecure.
+
+	... Running for the counting the rows of the analytics-api database tables ...
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+
+	... Running for dashboard database tables list ...
+Warning: Using a password on the command line interface can be insecure.
+
+	... Running for the counting the rows of the dashboard database tables ...
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+
+	... Running for discovery database tables list ...
+Warning: Using a password on the command line interface can be insecure.
+
+	... Running for the counting the rows of the discovery database tables ...
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+
+	... Running for ecommerce database tables list ...
+Warning: Using a password on the command line interface can be insecure.
+
+	... Running for the counting the rows of the ecommerce database tables ...
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+
+	... Running for edxapp database tables list ...
+Warning: Using a password on the command line interface can be insecure.
+
+	... Running for the counting the rows of the edxapp database tables ...
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+
+	... Running for edxapp_csmh database tables list ...
+Warning: Using a password on the command line interface can be insecure.
+
+	... Running for the counting the rows of the edxapp_csmh database tables ...
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+
+	... Running for programs database tables list ...
+Warning: Using a password on the command line interface can be insecure.
+
+	... Running for the counting the rows of the programs database tables ...
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+
+	... Running for reports database tables list ...
+Warning: Using a password on the command line interface can be insecure.
+
+	... Running for the counting the rows of the reports database tables ...
+
+	... Running for xqueue database tables list ...
+Warning: Using a password on the command line interface can be insecure.
+
+	... Running for the counting the rows of the xqueue database tables ...
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+
+..... End of rows counting of tables of the MySQL user databases .....
+
+***** MySQL Rows Count End *****
+@@@ End of the script which Counting the rows of the MySQL tables on the 10.129.103.27 server.@@@
+MySQL row count script ended at Date and Time is: 08/13/20 19:19:05
+Time(in second) taken for running MySQL row count script: 89 Sec.
+
+
+
+Mongo script start runing at Date and Time is: 08/13/20 19:19:05
+@@@ Start of rows Count of Mongo on 10.129.103.27 server. @@@
+
+***** Mongo Rows count Start *****
+mkdir: cannot create directory ‘’: No such file or directory
+
+..... Directory  is Created for Mongo .....
+
+..... A directory ../../Result/GHI/Test/Round2/RecordCountResult/Rows_10.129.103.27/Mongo is Created for the Mongo row count result.....
+
+..... List all User Mongo databases .....
+Ignore Mongo System databases admin.
+Ignore Mongo System databases local.
+
+..... Running for row count of the collection of all user databases .....
+
+..... Get rows count of collection of database cs_comments_service .....
+Get rows count of collection: contents ...
+Get rows count of collection: subscriptions ...
+Get rows count of collection: users ...
+
+..... End of the rows count of the collections of the cs_comments_service database .....
+
+..... Get rows count of collection of database edxapp .....
+Get rows count of collection: assetstore ...
+Get rows count of collection: fs.chunks ...
+Get rows count of collection: fs.files ...
+Get rows count of collection: modulestore ...
+Get rows count of collection: modulestore.active_versions ...
+Get rows count of collection: modulestore.definitions ...
+Get rows count of collection: modulestore.structures ...
+rm: cannot remove 'mongo_dbs.txt': No such file or directory
+
+..... End of the rows count of the collections of the edxapp database .....
+
+***** Mongo Rows Count Script End *****
+@@@ End of the script which Counting the rows of the Mongo collections on the 10.129.103.27 server. @@@
+Mongo row count script ended at Date and Time is: 08/13/20 19:19:06
+Time(in second) taken for running Mongo row count script: 1 Sec.
+
+
+---------------------------- Completion of Rows Count -------------------------------------
+Script ended at Date and Time is: 08/13/20 19:19:06
+Time(in second) taken for running row count script: 90 Sec.
+
+=======================================================================================================================================
+sarita@dbpsysads-desktop:~/gitLabGHI/iitbombayxdbupgrade/02July20/iitbombayxdbupgrade/Script/RecordCountScript$ set-title saritaGIT
+sarita@dbpsysads-desktop:~/gitLabGHI/iitbombayxdbupgrade/02July20/iitbombayxdbupgrade/Script/RecordCountScript$ cd ../Auto_IncrementScript/
+sarita@dbpsysads-desktop:~/gitLabGHI/iitbombayxdbupgrade/02July20/iitbombayxdbupgrade/Script/Auto_IncrementScript$ ls
+Auto_IncrementCount.sh  parameter.config  ReadMe.md
+sarita@dbpsysads-desktop:~/gitLabGHI/iitbombayxdbupgrade/02July20/iitbombayxdbupgrade/Script/Auto_IncrementScript$ vi parameter.config 
+sarita@dbpsysads-desktop:~/gitLabGHI/iitbombayxdbupgrade/02July20/iitbombayxdbupgrade/Script/Auto_IncrementScript$ bash Auto_IncrementCount.sh 
+
+
+Script start runing at Date and Time is: 08/13/20 17:48:41
+@@@ Start to find Auto_Increment value of the MySQL database on 10.129.103.82 server. @@@
+
+***** MySQL Start *****
+
+..... Directory ../../Result/GHI/Test/Round2/Auto_IncrementResult is created for the result .....
+
+..... Check the MySQL Connection on the 10.129.103.82 server. .....
+Warning: Using a password on the command line interface can be insecure.
+
+..... MySQL Database Connection Successful on the 10.129.103.82 server .....
+
+Reading Auto_Increment Values of the tables of the 10.129.103.82 server ...
+Warning: Using a password on the command line interface can be insecure.
+
+***** MySQL task End *****
+@@@ End To find the Auto_Increment value of the tables of the MySQL database on the 10.129.103.82 server @@@
+script ended at Date and Time is: 08/13/20 17:48:42
+Time(in second) taken for running the script: 1 Sec.
+sarita@dbpsysads-desktop:~/gitLabGHI/iitbombayxdbupgrade/02July20/iitbombayxdbupgrade/Script/Auto_IncrementScript$ vi parameter.config 
+sarita@dbpsysads-desktop:~/gitLabGHI/iitbombayxdbupgrade/02July20/iitbombayxdbupgrade/Script/Auto_IncrementScript$ bash Auto_IncrementCount.sh 
+
+
+Script start runing at Date and Time is: 08/13/20 17:49:16
+@@@ Start to find Auto_Increment value of the MySQL database on 10.129.103.26 server. @@@
+
+***** MySQL Start *****
+
+..... Directory ../../Result/GHI/Test/Round2/Auto_IncrementResult is created for the result .....
+
+..... Check the MySQL Connection on the 10.129.103.26 server. .....
+Warning: Using a password on the command line interface can be insecure.
+
+..... MySQL Database Connection Successful on the 10.129.103.26 server .....
+
+Reading Auto_Increment Values of the tables of the 10.129.103.26 server ...
+Warning: Using a password on the command line interface can be insecure.
+
+***** MySQL task End *****
+@@@ End To find the Auto_Increment value of the tables of the MySQL database on the 10.129.103.26 server @@@
+script ended at Date and Time is: 08/13/20 17:49:17
+Time(in second) taken for running the script: 1 Sec.
+sarita@dbpsysads-desktop:~/gitLabGHI/iitbombayxdbupgrade/02July20/iitbombayxdbupgrade/Script/Auto_IncrementScript$ vi parameter.config 
+sarita@dbpsysads-desktop:~/gitLabGHI/iitbombayxdbupgrade/02July20/iitbombayxdbupgrade/Script/Auto_IncrementScript$ bash Auto_IncrementCount.sh 
+
+
+Script start runing at Date and Time is: 08/13/20 17:49:53
+@@@ Start to find Auto_Increment value of the MySQL database on 10.129.103.27 server. @@@
+
+***** MySQL Start *****
+
+..... Directory ../../Result/GHI/Test/Round2/Auto_IncrementResult is created for the result .....
+
+..... Check the MySQL Connection on the 10.129.103.27 server. .....
+Warning: Using a password on the command line interface can be insecure.
+
+..... MySQL Database Connection Successful on the 10.129.103.27 server .....
+
+Reading Auto_Increment Values of the tables of the 10.129.103.27 server ...
+Warning: Using a password on the command line interface can be insecure.
+
+***** MySQL task End *****
+@@@ End To find the Auto_Increment value of the tables of the MySQL database on the 10.129.103.27 server @@@
+script ended at Date and Time is: 08/13/20 17:50:01
+Time(in second) taken for running the script: 8 Sec.
+sarita@dbpsysads-desktop:~/gitLabGHI/iitbombayxdbupgrade/02July20/iitbombayxdbupgrade/Script/Auto_IncrementScript$ bash Auto_IncrementCount.sh 
+
+
+Script start runing at Date and Time is: 08/13/20 18:02:22
+@@@ Start to find Auto_Increment value of the MySQL database on 10.129.103.27 server. @@@
+
+***** MySQL Start *****
+
+..... Directory ../../Result/GHI/Test/Round2/Auto_IncrementResult is created for the result .....
+
+..... Check the MySQL Connection on the 10.129.103.27 server. .....
+Warning: Using a password on the command line interface can be insecure.
+
+..... MySQL Database Connection Successful on the 10.129.103.27 server .....
+
+Reading Auto_Increment Values of the tables of the 10.129.103.27 server ...
+Warning: Using a password on the command line interface can be insecure.
+
+***** MySQL task End *****
+@@@ End To find the Auto_Increment value of the tables of the MySQL database on the 10.129.103.27 server @@@
+script ended at Date and Time is: 08/13/20 18:02:24
+Time(in second) taken for running the script: 2 Sec.
+=======================================================================================================================================
+
